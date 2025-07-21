@@ -15,13 +15,13 @@ final class HomeController extends AbstractController
     public function index(UserPasswordHasherInterface $passwordhash,EntityManagerInterface $em): Response
     {
 
-        $owner=new Owner();
+        /*$owner=new Owner();
         $owner->setEmail('mohamed@gmail.com');
         $owner->setPassword($passwordhash->hashPassword($owner,'1234'));
-        $em->persist($owner);
-        $em->flush();
+       // $em->persist($owner);
+        //$em->flush();*/
 
-        dd($owner);
+        //dd($owner);
         
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
