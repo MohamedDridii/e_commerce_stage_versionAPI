@@ -13,7 +13,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class OwnerController extends AbstractController
 {
     #[IsGranted('ROLE_OWNER')]
-    #[Route('', name: 'home')]
+    #[Route('/home', name: 'home')]
     public function index(UserPasswordHasherInterface $passwordhash,EntityManagerInterface $em): Response
     {
 
