@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Owner;
 
 use App\Entity\User;
 use App\Entity\Owner;
