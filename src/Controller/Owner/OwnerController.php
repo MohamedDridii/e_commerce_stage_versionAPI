@@ -2,6 +2,8 @@
 
 namespace App\Controller\Owner;
 
+use App\Entity\Product;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,12 +16,15 @@ final class OwnerController extends AbstractController
 {
     #[IsGranted('ROLE_OWNER')]
     #[Route('/home', name: 'home')]
-    public function index(UserPasswordHasherInterface $passwordhash,EntityManagerInterface $em): Response
+    public function index(ProductRepository $repo): Response
     {
-
-        
+        $products=$repo->findAll();
+        $totStock=0;
+        foreach($products as $product){
+            $totStock+= $product->getTotalStock();
+        }
         return $this->render('owner/owner.html.twig', [
-            'controller_name' => 'You are now in the owner home page!!',
+            'totalProductsInStock'=>$totStock
         ]);
     }
 }

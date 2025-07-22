@@ -142,6 +142,15 @@ class Product
 
         return $this;
     }
+    
+    public function getTotalStock(): int
+    {
+        $total = 0;
+        foreach ($this->getStocks() as $stock) {
+            $total += $stock->getQuantity();
+        }
+        return $total;
+    }
 
     
 }

@@ -16,6 +16,15 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
+    public function countTotalStock(Product $product){
+        return (int) $this->createQueryBuilder('p')
+                ->select('Sum(s.quantity) as totalStock')
+                ->join('p.stocks','s')
+                ->where('p = :product')
+                ->setParameter('product',$product)
+                ->getQuery()
+                ->getSingleScalarResult();
+    }
     //    /**
     //     * @return Product[] Returns an array of Product objects
     //     */
