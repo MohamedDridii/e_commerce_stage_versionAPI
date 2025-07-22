@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}All Stores{% endblock %}
+{% block title %}All Products{% endblock %}
 
 {% block body %}
 <style>
@@ -30,8 +30,8 @@
                 </td>
                 
                 <td>
-                    <a href="{{ path('owner.store.edit', {id: product.id}) }}" class="btn btn-warning">Edit</a><!-- la partie id sert a specifier l'id de recette pour path car elle genere un url vers une route nomme et dans le route dans le controlleur le champ id est obligatoire -->
-                    <a href="{{ path('owner.store.delete', {id: product.id}) }}" class="btn btn-danger btn-delete">Delete</a>
+                    <a href="{{ path('owner.product.edit', {id: product.id}) }}" class="btn btn-warning">Edit</a><!-- la partie id sert a specifier l'id de recette pour path car elle genere un url vers une route nomme et dans le route dans le controlleur le champ id est obligatoire -->
+                    <a href="{{ path('owner.product.delete', {id: product.id}) }}" class="btn btn-danger btn-delete">Delete</a>
                 </td>
             </tr>
             {% endfor %}
