@@ -48,9 +48,9 @@ final class ProductController extends AbstractController
         ]);
     }
     #[Route('/{id}/edit',name:'edit')]
-    public function EditStore(Store $store,EntityManagerInterface $em,Request $request):Response
+    public function Editproduct(Product $product,EntityManagerInterface $em,Request $request):Response
     {
-        $form=$this->createForm(ProductType::class,$store);
+        $form=$this->createForm(ProductType::class,$product);
         $form->handleRequest($request);
         if($form->isSubmitted()&& $form->isValid()){
             $em->flush();
@@ -59,4 +59,13 @@ final class ProductController extends AbstractController
         }
         return $this->render('product/edit.html.twig');
     }
+    #[Route('/{id}/delete',name:'edit')]
+    public function Deleteproduct(Product $product,EntityManagerInterface $em,Request $request):Response
+    {
+        $em->remove($product);
+        $em->flush();
+        $this->addFlash('success','product deleted ');
+        return $this->redirectToRoute('owner.product.home');
+    }
+
 }
