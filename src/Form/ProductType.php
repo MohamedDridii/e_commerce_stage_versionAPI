@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\Stock;
 use App\Entity\Store;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -22,20 +23,23 @@ class ProductType extends AbstractType
             ->add('description')
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
+                'required'=>true
             ])
             ->add('quantity',IntegerType::class,[
                 'mapped'=>false,//this is not related to product entity 
                 'label'=>'Initial Stock Quantity',
-                'required'=>true
+                'required'=>true,
+                'data' => $options['quantity']
             ])
             ->add('store',EntityType::class,[
                 'class'=>Store::class,
                 'choice_label'=>'name',//this field is crucial because we will display only the name of the store not the whole entity 
-                'label'=>'store',
+                'label'=>'Store',
                 'mapped'=>false,
                 'required'=>true,
-                'expanded'=>true
+                'expanded'=>true,
+                'data' => $options['store']
             ])
         ;
     }
@@ -44,6 +48,8 @@ class ProductType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Product::class,
+            'quantity' => null, // Default value for quantity
+            'store' => null 
         ]);
     }
 }
