@@ -33,9 +33,13 @@ final class ProductController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted()&& $form->isValid()){
             $em->persist($product);
+            // now we create the stock for this product so we can relate the product and the store using the pivot table stock 
             $stock=new Stock();
+            //we set the quantity of the product 
             $stock->setQuantity($form->get('quantity')->getData());
+            //we set the product 
             $stock->setProduct($product);
+            // and set the store related to the product 
             $stock->setStore($form->get('store')->getData());
             $em->persist($stock);
             $em->flush();
