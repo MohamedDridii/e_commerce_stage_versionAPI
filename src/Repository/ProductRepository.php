@@ -25,6 +25,30 @@ class ProductRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleScalarResult();
     }
+    public function findGroupedProducts()
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.name', 
+                    'MIN(p.id) as id',
+                    'SUM(s.quantity) as totalStock',
+                    'COUNT(DISTINCT s.store) as storeCount')
+            ->leftJoin('p.stocks', 's')
+            ->groupBy('p.name')
+            ->getQuery()
+            ->getResult();
+    }
+    public function findWithStores($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.stocks', 's')
+            ->leftJoin('s.store', 'st')
+            ->addSelect('s')
+            ->addSelect('st')
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
     //    /**
     //     * @return Product[] Returns an array of Product objects
     //     */

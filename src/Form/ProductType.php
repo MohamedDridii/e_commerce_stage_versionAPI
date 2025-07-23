@@ -8,14 +8,18 @@ use App\Entity\Stock;
 use App\Entity\Store;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Form\StoreStockType;
 
 class ProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $stockData = $options['stock_data'] ?? [];
+
         $builder
             ->add('name')
             ->add('price')
@@ -26,20 +30,15 @@ class ProductType extends AbstractType
                 'choice_label' => 'name',
                 'required'=>true
             ])
-            ->add('quantity',IntegerType::class,[
-                'mapped'=>false,//this is not related to product entity 
-                'label'=>'Initial Stock Quantity',
+            ->add('stock_data',CollectionType::class,[
                 'required'=>true,
-                'data' => $options['quantity']
-            ])
-            ->add('store',EntityType::class,[
-                'class'=>Store::class,
-                'choice_label'=>'name',//this field is crucial because we will display only the name of the store not the whole entity 
-                'label'=>'Store',
                 'mapped'=>false,
-                'required'=>true,
-                'expanded'=>true,
-                'data' => $options['store']
+                'label'=>false,
+                'entry_type'=>StoresStockType::class,
+                'entry_options' => [],
+                'allow_add'=>false,
+                'allow_delete'=>false,
+                'data'=>$options['stock_data']
             ])
         ;
     }
@@ -48,8 +47,7 @@ class ProductType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Product::class,
-            'quantity' => null, // Default value for quantity
-            'store' => null 
+            'stock_data'=>[] 
         ]);
     }
 }

@@ -29,6 +29,17 @@ class StockRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findStoresByProductIdDQL(int $productId){
+        return $this->getEntityManager()
+            ->createQuery('
+                SELECT s.id, s.name, s.adress, st.quantity
+                FROM App\Entity\Stock st 
+                JOIN st.store s
+                WHERE st.product = :productId
+            ')
+            ->setParameter('productId', $productId)
+            ->getResult();
+    }
     //    /**
     //     * @return Stock[] Returns an array of Stock objects
     //     */
