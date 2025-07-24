@@ -169,7 +169,7 @@ final class ProductController extends AbstractController
         return $this->redirectToRoute('owner.product.home');
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show',)]
     public function show(ProductRepository $productRepo, $id,StockRepository $stockRepo): Response
     {
         $product=$productRepo->find($id);

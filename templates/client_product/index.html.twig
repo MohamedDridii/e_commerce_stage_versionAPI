@@ -1,0 +1,36 @@
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}Products{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="mb-4">All Products</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for product in products %}
+            <div class="col">
+                <div class="card h-100">
+                    {% if product.image %}
+                        <img src="{{ asset('uploads/products/' ~ product.image) }}" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Placeholder">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description|slice(0, 100) ~ '...' }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Price: {{ product.price }} TND</small>
+                    </div>
+                    <a href="{{ path('client.product.show',{id: product.id}) }}" class="btn btn-success mt-3">show details </a>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center">
+                    No products available.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
