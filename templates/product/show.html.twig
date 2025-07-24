@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>{{ product.name }}</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <img src="{{ asset('uploads/products/' ~ product.image) }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">Product Details</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Price:</strong> {{ product.price }} TND
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Category:</strong> {{ product.category.name }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Total in Stock:</strong> {{ product.getTotalStock() }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Stock in Stores</h5>
+                </div>
+                <div class="card-body">
+                    {% if stores|length > 0 %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Store</th>
+                                    <th>Address</th>
+                                    <th>Quantity</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stock in stores %}
+                                <tr>
+                                    <td>{{ stock.name }}</td>
+                                    <td>{{ stock.adress }}</td>
+                                    <td>{{ stock.quantity }}</td>
+                                    <td>
+                                        {% if stock.quantity < 5 %}
+                                            <span class="badge bg-danger">Low</span>
+                                        {% elseif stock.quantity < 15 %}
+                                            <span class="badge bg-warning">Medium</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Good</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="alert alert-warning">No stock information available</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="{{ path('owner.product.home') }}" class="btn btn-secondary mt-3">← Back to Products</a>
+</div>
+{% endblock %}

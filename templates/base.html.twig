@@ -13,27 +13,68 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
-        <nav class="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{ path('owner.home')}}">Home page</a>
-                <a class="navbar-brand" href="{{ path('owner.store.home')}}">My Stores</a>
-                <a class="navbar-brand" href="{{ path('owner.product.home')}}">My products</a>
-                <a class="navbar-brand" href="{{ path('owner.category.home')}}">My Categories</a>
-                <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav">
-                        
-                    </ul>
+    <body style="background: #f4f6fb;">
+
+        <nav class="navbar navbar-dark" style="background: #2563eb; height: 60px;">
+            <div class="d-flex align-items-center w-100">
+                <button id="sidebarToggle" class="btn btn-light me-3" style="color: #2563eb; font-weight: 700;">
+                    <i class="bi bi-list"></i> Menu
+                </button>
+                <span class="navbar-brand mb-0 h1" style="color: #fff; letter-spacing: 2px; font-weight: 600;"> Admin</span>
+                <div class="ms-auto">
+                    <a class="btn btn-light me-2" style="color: #2563eb; font-weight: 500;" href="{{ path('owner.home')}}">Home</a>
+                    <a class="btn btn-light me-2" style="color: #2563eb; font-weight: 500;" href="{{ path('owner.store.home')}}">Stores</a>
+                    <a class="btn btn-light me-2" style="color: #2563eb; font-weight: 500;" href="{{ path('owner.product.home')}}">Products</a>
+                    <a class="btn btn-light" style="color: #2563eb; font-weight: 500;" href="{{ path('owner.category.home')}}">Categories</a>
                 </div>
             </div>
         </nav>
 
-
-
-
-        <div class="container my-4">
-            {% include "partials/flash.html.twig" %}
-            {% block body %}{% endblock %}
+        <div class="d-flex" style="min-height: 100vh;">
+            <aside id="sidebar" class="shadow-sm p-3" style="width: 220px; background: #1e293b; color: #fff; position: fixed; top: 60px; left: -240px; height: calc(100vh - 60px); z-index: 1050; transition: left 0.3s;">
+                <button id="sidebarClose" class="btn btn-sm btn-light mb-3" style="color: #2563eb; float: right;"><i class="bi bi-x-lg"></i></button>
+                <h5 class="mb-4" style="color: #38bdf8; font-weight: 700;">Menu</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" style="color: #fff; border-radius: 6px; transition: background 0.2s;" href="{{ path('owner.home')}}" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='none'"><i class="bi bi-house"></i> Home</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" style="color: #fff; border-radius: 6px; transition: background 0.2s;" href="{{ path('owner.store.home')}}" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='none'"><i class="bi bi-shop"></i> Stores</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" style="color: #fff; border-radius: 6px; transition: background 0.2s;" href="{{ path('owner.product.home')}}" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='none'"><i class="bi bi-box"></i> Products</a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" style="color: #fff; border-radius: 6px; transition: background 0.2s;" href="{{ path('owner.category.home')}}" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='none'"><i class="bi bi-tags"></i> Categories</a>
+                    </li>
+                </ul>
+            </aside>
+            <div id="sidebarOverlay" style="display:none; position:fixed; top:60px; left:0; width:100vw; height:calc(100vh - 60px); background:rgba(30,41,59,0.3); z-index:1040;"></div>
+            <main class="flex-grow-1 p-4" style="background: #f4f6fb; min-height: 100vh; margin-left:0; transition: margin-left 0.3s; width:100vw;">
+                {% include "partials/flash.html.twig" %}
+                {% block body %}{% endblock %}
+            </main>
         </div>
+        <script>
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const main = document.querySelector('main');
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.style.left = '0';
+                sidebarOverlay.style.display = 'block';
+            });
+            sidebarClose.addEventListener('click', () => {
+                sidebar.style.left = '-240px';
+                sidebarOverlay.style.display = 'none';
+            });
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.style.left = '-240px';
+                sidebarOverlay.style.display = 'none';
+            });
+        </script>
+        <!-- Optionally include Bootstrap Icons for sidebar icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     </body>
 </html>
