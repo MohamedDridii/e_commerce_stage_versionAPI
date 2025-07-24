@@ -35,6 +35,7 @@ class Order
      */
     #[ORM\OneToMany(targetEntity: OrderLine::class, mappedBy: 'orderr')]
     private Collection $orderLines;
+    //one order can be in many lines in the orderline entity that's why we have a collection of the order lines that contains the order 
 
     public function __construct()
     {
