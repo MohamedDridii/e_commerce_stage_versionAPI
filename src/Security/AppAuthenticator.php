@@ -49,7 +49,13 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         }*/
 
         // For example:
-        return new RedirectResponse($this->urlGenerator->generate('owner.home'));
+        $user=$token->getUser();
+        if($user instanceof \App\Entity\Owner){
+            return new RedirectResponse($this->urlGenerator->generate('owner.home'));
+        }
+        if($user instanceof \App\Entity\Client){
+            return new RedirectResponse($this->urlGenerator->generate('client.home'));
+        }
         throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 
