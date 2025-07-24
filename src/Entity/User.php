@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name: "type", type: "string")]
-#[ORM\DiscriminatorMap(["user" => User::class, "Owner" => Owner::class])]//lors de creation de class owner elle ajoute le type dans le table user
+#[ORM\DiscriminatorMap(["user" => User::class, "Owner" => Owner::class,'Client'=>Client::class])]//lors de creation de class owner elle ajoute le type dans le table user
 #[ORM\Table(name: "user")]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
