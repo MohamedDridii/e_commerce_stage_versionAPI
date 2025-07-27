@@ -1,26 +1,160 @@
 {% extends 'base_auth.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Client Registration{% endblock %}
 
 {% block body %}
-<h1 class="h3 mb-3 font-weight-normal text-center">Register</h1>
+<div class="w-100">
+    <div class="text-center mb-5">
+        <div class="logo-icon mx-auto mb-3">
+            <i class="bi bi-person-plus text-white fs-4"></i>
+        </div>
+        <h1 class="h4 fw-bold mb-3">Create Your Client Account</h1>
+        <p class="text-muted">Join our community and start shopping today</p>
+    </div>
+    
+    <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
+        <div class="card-body p-4">
+            {{ form_start(registrationForm, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                {{ form_errors(registrationForm) }}
+                
+                <div class="mb-3">
+                    {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        {{ form_widget(registrationForm.email, {
+                            'attr': {
+                                'class': 'form-control form-control-lg',
+                                'placeholder': 'your@email.com'
+                            }
+                        }) }}
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter a valid email address.
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(registrationForm.password, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        {{ form_widget(registrationForm.password, {
+                            'attr': {
+                                'class': 'form-control form-control-lg',
+                                'placeholder': '••••••••'
+                            }
+                        }) }}
+                        <button class="btn btn-outline-secondary toggle-password" type="button">
+                            <i class="bi bi-eye-slash"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback">
+                        Password must be at least 6 characters.
+                    </div>
+                </div>
+                
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        {{ form_label(registrationForm.name, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-person"></i>
+                            </span>
+                            {{ form_widget(registrationForm.name, {
+                                'attr': {
+                                    'class': 'form-control form-control-lg',
+                                    'placeholder': 'Full name'
+                                }
+                            }) }}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {{ form_label(registrationForm.phoneNumber, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-telephone"></i>
+                            </span>
+                            {{ form_widget(registrationForm.phoneNumber, {
+                                'attr': {
+                                    'class': 'form-control form-control-lg',
+                                    'placeholder': '+1 234 567 890'
+                                }
+                            }) }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(registrationForm.adress, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-house"></i>
+                        </span>
+                        {{ form_widget(registrationForm.adress, {
+                            'attr': {
+                                'class': 'form-control form-control-lg',
+                                'placeholder': 'Your full address'
+                            }
+                        }) }}
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="form-check">
+                        {{ form_widget(registrationForm.agreeTerms, {
+                            'attr': {'class': 'form-check-input'}
+                        }) }}
+                        {{ form_label(registrationForm.agreeTerms, null, {
+                            'label_attr': {'class': 'form-check-label'}
+                        }) }}
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">
+                    <i class="bi bi-person-plus me-2"></i>Create Account
+                </button>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+    
+    <div class="text-center mt-4">
+        <p class="text-muted mb-0">Already have an account?</p>
+        <a href="{{ path('app_login') }}" class="btn btn-link text-primary fw-medium">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Sign in now
+        </a>
+    </div>
+</div>
 
-{{ form_start(registrationForm, {
-    attr: {
-        class: 'bg-white p-4 rounded shadow',
-        style: 'min-width:320px; max-width:400px; width:100%;'
-    }
-}) }}
-    {{ form_errors(registrationForm) }}
-    {{ form_row(registrationForm.email) }}
-    {{ form_row(registrationForm.password, { label: 'Password' }) }}
-    {{ form_row(registrationForm.name) }}
-    {{ form_row(registrationForm.adress) }}
-    {{ form_row(registrationForm.phoneNumber) }}
-    {{ form_row(registrationForm.agreeTerms) }}
+<script>
+    // Toggle password visibility
+    document.querySelector('.toggle-password').addEventListener('click', function() {
+        const passwordInput = document.getElementById('{{ registrationForm.password.vars.id }}');
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        const icon = this.querySelector('i');
+        icon.classList.toggle('bi-eye');
+        icon.classList.toggle('bi-eye-slash');
+    });
 
-    <button type="submit" class="btn btn-lg btn-primary w-100 mt-3">Register</button>
-{{ form_end(registrationForm) }}
-
-<a href="{{ path('app_login') }}">Log in</a>
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('.needs-validation');
+        
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script>
 {% endblock %}

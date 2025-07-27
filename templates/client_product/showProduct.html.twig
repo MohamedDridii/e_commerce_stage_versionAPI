@@ -1,4 +1,4 @@
-{% extends 'base_auth.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-4">
-                <img src="{{ asset('uploads/products/' ~ product.image) }}" class="card-img-top" alt="{{ product.name }}">
+                <img src="{{ asset('uploads/products/' ~ product.image) }}" class="card-img-top" alt="{{ product.name }}" style="max-height: 400px; object-fit: contain;">
                 <div class="card-body">
                     <h5 class="card-title">Product Details</h5>
                     <p class="card-text">{{ product.description }}</p>
@@ -20,8 +20,29 @@
                         <li class="list-group-item">
                             <strong>Category:</strong> {{ product.category.name }}
                         </li>
-                        
                     </ul>
+                    
+                    {# Formulaire d'ajout au panier #}
+                    <form action="{{ path('client.bucket.add', {'id': product.id}) }}" method="post" class="mt-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="quantity" class="form-label"><strong>Quantity:</strong></label>
+                                <input type="number" 
+                                       id="quantity" 
+                                       name="quantite" 
+                                       class="form-control" 
+                                       value="1" 
+                                       min="1"
+                                       max="20"
+                                       required>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-primary w-100 py-2">
+                                    <i class="bi bi-cart-plus me-2"></i>Add to Bucket
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -67,6 +88,13 @@
         </div>
     </div>
 
-    <a href="{{ path('client.product.home') }}" class="btn btn-secondary mt-3">← Back to Products</a>
+    <div class="d-flex justify-content-between mt-3">
+        <a href="{{ path('client.product.home') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Products
+        </a>
+        <a href="{{ path('client.bucket.home') }}" class="btn btn-outline-primary">
+            <i class="bi bi-cart me-1"></i>View Bucket
+        </a>
+    </div>
 </div>
 {% endblock %}

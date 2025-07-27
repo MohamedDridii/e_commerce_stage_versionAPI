@@ -1,38 +1,164 @@
-
 {% extends 'base_auth.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block body %}
-<form method="post" class="bg-white p-4 rounded shadow" style="min-width:320px; max-width:400px; width:100%;">
+<div class="w-100">
+    <div class="text-center mb-5">
+        <div class="logo-icon mx-auto mb-3">
+            <i class="bi bi-shield-lock text-white fs-4"></i>
+        </div>
+        <h1 class="display-5 fw-bold mb-3">Welcome to E-Commerce</h1>
+        <p class="text-muted">Sign in to access your personal dashboard</p>
+    </div>
+    
     {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal text-center">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control mb-2" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control mb-2" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
-
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" name="_remember_me"> Remember me
-        </label>
+    {% if app.user %}
+        <div class="alert alert-info mb-4">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-info-circle me-2"></i>
+                <div>
+                    You are already logged in as <strong>{{ app.user.userIdentifier }}</strong>
+                </div>
+            </div>
+            <div class="mt-2">
+                <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-info">
+                    <i class="bi bi-box-arrow-right me-1"></i>Logout
+                </a>
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
+        <div class="card-body p-4">
+            <h2 class="h4 fw-bold mb-4 text-center">Login to your account</h2>
+            
+            <form method="post" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="inputEmail" class="form-label fw-medium">
+                        <i class="bi bi-envelope me-1"></i>Email address
+                    </label>
+                    <input 
+                        type="email" 
+                        value="{{ last_username }}" 
+                        name="email" 
+                        id="inputEmail" 
+                        class="form-control form-control-lg" 
+                        placeholder="your@email.com" 
+                        autocomplete="email" 
+                        required 
+                        autofocus
+                    >
+                    <div class="invalid-feedback">
+                        Please enter a valid email address.
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label fw-medium">
+                        <i class="bi bi-lock me-1"></i>Password
+                    </label>
+                    <div class="input-group">
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="inputPassword" 
+                            class="form-control form-control-lg" 
+                            autocomplete="current-password" 
+                            required
+                        >
+                        <button class="btn btn-outline-secondary toggle-password" type="button">
+                            <i class="bi bi-eye-slash"></i>
+                        </button>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter your password.
+                    </div>
+                </div>
+                
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="_remember_me" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">
+                            Remember me
+                        </label>
+                    </div>
+                    <a href="#" class="text-decoration-none text-primary fw-medium">
+                        Forgot password?
+                    </a>
+                </div>
+                
+                <button class="btn btn-primary w-100 py-3 fw-bold" type="submit">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign in
+                </button>
+            </form>
+        </div>
     </div>
+    
+    <div class="text-center mt-4">
+        <p class="text-muted mb-3">Or sign in with</p>
+        <div class="d-flex justify-content-center gap-3 mb-4">
+            <button type="button" class="btn btn-light border rounded-circle p-3">
+                <i class="bi bi-google fs-5"></i>
+            </button>
+            <button type="button" class="btn btn-light border rounded-circle p-3">
+                <i class="bi bi-facebook fs-5 text-primary"></i>
+            </button>
+            <button type="button" class="btn btn-light border rounded-circle p-3">
+                <i class="bi bi-twitter fs-5 text-info"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div class="card border-0 rounded-lg mt-4">
+        <div class="card-body text-center p-3">
+            <p class="mb-2">Don't have an account?</p>
+            <div class="d-flex flex-column flex-md-row justify-content-center gap-2">
+                <a href="{{ path('app_register') }}" class="btn btn-outline-dark flex-fill">
+                    <i class="bi bi-person-plus me-2"></i>Register as Owner
+                </a>
+                <a href="{{ path('client.register') }}" class="btn btn-dark flex-fill">
+                    <i class="bi bi-person-plus me-2"></i>Register as Client
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <button class="btn btn-lg btn-primary w-100" type="submit">
-        Log  in
-    </button>
+<script>
+    // Toggle password visibility
+    document.querySelector('.toggle-password').addEventListener('click', function() {
+        const passwordInput = document.getElementById('inputPassword');
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        const icon = this.querySelector('i');
+        icon.classList.toggle('bi-eye');
+        icon.classList.toggle('bi-eye-slash');
+    });
 
-    <a href="{{path('app_register')}}">Sign up as owner </a> <br>
-    <a href="{{path('client.register')}}">Sign up as client </a>
-</form>
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('.needs-validation');
+        
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script>
 {% endblock %}
