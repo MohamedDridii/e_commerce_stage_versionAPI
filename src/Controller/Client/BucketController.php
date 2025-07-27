@@ -77,6 +77,8 @@ final class BucketController extends AbstractController
 
         return $this->redirectToRoute('client.bucket.home');
     }
+
+    
     //this is where we're gonna delete a product it will be in the home bucket page a button when clicked it executes this method 
     #[Route('/remove/{id}',name:'remove')]
     public function removeProduct (Product $product,BucketSession $bucketSession){
@@ -84,6 +86,8 @@ final class BucketController extends AbstractController
         $this->addFlash('success','Product removed ');
         return $this->redirectToRoute('client.bucket.home');
     }
+
+
     //this method will be exectued when clicking on button update in the bucket home page 
     #[Route('/update/{id}',name:'update')]
     public function updateProduct (Product $product,BucketSession $bucketSession,Request $request){
