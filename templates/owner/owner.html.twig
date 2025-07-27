@@ -1,151 +1,79 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
 
 {% block body %}
-<style>
-  .dashboard-container {
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    min-height: 80vh;
-  }
-  .dashboard-main {
-    flex: 1;
-    padding: 2rem 0;
-  }
-  .dashboard-sidebar {
-    width: 260px;
-    background: linear-gradient(180deg, #23232a 0%, #18181b 100%);
-    color: #e5e7eb;
-    border-radius: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    padding: 2rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 80vh;
-  }
-  .sidebar-profile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-  .sidebar-profile img {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    margin-bottom: 0.5rem;
-  }
-  .sidebar-menu {
-    width: 100%;
-    margin-bottom: 2rem;
-  }
-  .sidebar-menu a {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #e5e7eb;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background 0.2s;
-  }
-  .sidebar-menu a.active, .sidebar-menu a:hover {
-    background: #2563eb;
-    color: #fff;
-  }
-  .sidebar-menu i {
-    font-size: 1.3rem;
-  }
-  .dashboard-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  .dashboard-card {
-    background: #fff;
-    border-radius: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 120px;
-    transition: box-shadow 0.2s;
-    text-decoration: none;
-  }
-  .dashboard-card:hover {
-    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
-  }
-  .dashboard-card .card-title {
-    color: #6b7280;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-  }
-  .dashboard-card .card-value {
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-  .dashboard-shortcuts {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
-  }
-  .shortcut {
-    background: #2563eb;
-    color: #fff;
-    border-radius: 0.75rem;
-    box-shadow: 0 2px 8px rgba(37,99,235,0.12);
-    padding: 1rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background 0.2s;
-    min-width: 120px;
-  }
-  .shortcut:hover {
-    background: #1e293b;
-    color: #38bdf8;
-  }
-  .shortcut i {
-    font-size: 1.7rem;
-    margin-bottom: 0.5rem;
-  }
-</style>
-
-<div class="dashboard-container">
-  
-  <main class="dashboard-main">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Welcome, {{ app.user.email }}</h1>
-    <div class="dashboard-cards">
-      <a href="#" class="dashboard-card">
+<div class="dashboard-grid">
+    <!-- Dashboard Cards -->
+    <div class="dashboard-card">
+        <div class="card-icon orders">
+            <i class="bi bi-cart"></i>
+        </div>
         <div class="card-title">Today's Orders</div>
-        <div class="card-value" style="color:#2563eb;">totalOrdersToday</div>
-      </a>
-      <a href="#" class="dashboard-card">
+        <div class="card-value" style="color: #2563eb;"> totalOrdersToday </div>
+        <div class="text-success small">
+            <i class="bi bi-arrow-up"></i> 12% from yesterday
+        </div>
+    </div>
+    
+    <div class="dashboard-card">
+        <div class="card-icon revenue">
+            <i class="bi bi-currency-dollar"></i>
+        </div>
         <div class="card-title">Today's Revenue</div>
-        <div class="card-value" style="color:#059669;">revenueToday TND</div>
-      </a>
-      <a href="{{ path('owner.product.home') }}" class="dashboard-card">
+        <div class="card-value" style="color: #10b981;"> revenueToday  TND</div>
+        <div class="text-success small">
+            <i class="bi bi-arrow-up"></i> 8% from yesterday
+        </div>
+    </div>
+    
+    <div class="dashboard-card">
+        <div class="card-icon products">
+            <i class="bi bi-box-seam"></i>
+        </div>
         <div class="card-title">Products in Stock</div>
-        <div class="card-value" style="color:#6366f1;">{{totalProductsInStock}}</div>
-      </a>
+        <div class="card-value" style="color: #8b5cf6;">{{ totalProductsInStock }}</div>
+        <div class="text-secondary small">
+            Across all stores
+        </div>
     </div>
-    <div class="dashboard-shortcuts">
-      <a href="{{ path('owner.product.create') }}" class="shortcut"><i class="bi bi-plus-square"></i> Add Product</a>
-      <a href="{{ path('owner.stock.home') }}" class="shortcut"><i class="bi bi-box"></i> Stock</a>
-      <a href="{{ path('owner.store.create') }}" class="shortcut"><i class="bi bi-shop"></i> Create Store</a>
-      <a href="{{ path('owner.category.create') }}" class="shortcut"><i class="bi bi-tags"></i> Add Category</a>
+    
+    <div class="dashboard-card">
+        <div class="card-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+            <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <div class="card-title">Low Stock Items</div>
+        <div class="card-value" style="color: #ef4444;"> lowStockItems </div>
+        <div class="text-danger small">
+            Needs attention
+        </div>
     </div>
-    <!-- Add more widgets, charts, tables here -->
-  </main>
 </div>
+
+<!-- Quick Actions -->
+<h3 class="section-title">Quick Actions</h3>
+<div class="shortcuts-grid">
+    <a href="{{ path('owner.product.create') }}" class="shortcut-card">
+        <i class="bi bi-plus-square"></i>
+        <div class="title">Add Product</div>
+    </a>
+    
+    <a href="{{ path('owner.stock.home') }}" class="shortcut-card">
+        <i class="bi bi-box"></i>
+        <div class="title">Manage Stock</div>
+    </a>
+    
+    <a href="{{ path('owner.store.create') }}" class="shortcut-card">
+        <i class="bi bi-shop"></i>
+        <div class="title">Create Store</div>
+    </a>
+    
+    <a href="{{ path('owner.category.create') }}" class="shortcut-card">
+        <i class="bi bi-tags"></i>
+        <div class="title">Add Category</div>
+    </a>
+</div>
+
+
 {% endblock %}
