@@ -10,21 +10,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 #[Route('/client/product', name: 'client.product.')]
 final class ClientProductController extends AbstractController
 {
+    #[IsGranted('ROLE_CLIENT')]
     #[Route('/home', name: 'home')]
     public function index(ProductRepository  $productrepo,CategoryRepository $categoryrepo,Request $request,StoreRepository $storerepo): Response
     {
         //read the category ID frm query parametre(the Query parametre takes any parametre passed in the path section in the view and add it to the url ala aaks route parametre li enti deifnehom kima {id} lezm taamlehom manuellement ama bel $request->query twali tasnaalek query param yetaada fel url b ay esm aaditou enti fel view kima fel cas hedhi category,edheka alehch aadina getInt('category',0))
-        $categoryId=$request->query->getInt('category', 0);        
+        $categoryId=$request->request->getInt('category', 0);        
         //read the category ID frm query parametre(the Query parametre takes any parametre passed in the path section in the view and add it to the url ala aaks route parametre li enti deifnehom kima {id} lezm taamlehom manuellement ama bel $request->query twali tasnaalek query param yetaada fel url b ay esm aaditou enti fel view kima fel cas hedhi category,edheka alehch aadina getInt('category',0))
-        $storeId=$request->query->getInt('store', 0);        
+        $storeId=$request->request->getInt('store', 0);        
         //read the category ID frm query parametre(the Query parametre takes any parametre passed in the path section in the view and add it to the url ala aaks route parametre li enti deifnehom kima {id} lezm taamlehom manuellement ama bel $request->query twali tasnaalek query param yetaada fel url b ay esm aaditou enti fel view kima fel cas hedhi category,edheka alehch aadina getInt('category',0))
-        $minstock=$request->query->getInt('min_stock', 0);    
+        $minstock=$request->request->getInt('min_stock', 0);    
         
-        $searchQuery=$request->query->get('searchQuery',null);
+        $searchQuery=$request->request->get('searchQuery',null);
        
         //find all categories 
         $categories=$categoryrepo->findAll();
