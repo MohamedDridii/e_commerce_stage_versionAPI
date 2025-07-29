@@ -49,7 +49,7 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-    public function findFiltredProducts(?int $categoryId,?int $storeId,?int $minStock){
+    public function findFiltredProducts(?int $categoryId,?int $storeId,?int $minStock,?string $searchQuery){
         $queryBuilder=$this->createQueryBuilder('p')//start query builder with alias p for product
                     ->leftJoin('p.category','c')//left join with category entity,alias 'c'
                     ->leftJoin('p.stocks','s') //left join with stock entity alias s
@@ -67,6 +67,10 @@ class ProductRepository extends ServiceEntityRepository
                     if($minStock!== null){
                         $queryBuilder->andWhere('s.quantity>=:minStock')
                                     ->setParameter('minStock',$minStock);
+                    }
+                    if($searchQuery){
+                        $queryBuilder->andWhere('p.name LIKE :searchQuery OR p.description LIKE :searchQuery')
+                                    ->setParameter('searchQuery','%'.$searchQuery.'%');
                     }
                     return $queryBuilder->getQuery()->getResult();
 
