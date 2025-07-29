@@ -49,6 +49,29 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+    public function findFiltredProducts(?int $categoryId,?int $storeId,?int $minStock){
+        $queryBuilder=$this->createQueryBuilder('p')//start query builder with alias p for product
+                    ->leftJoin('p.category','c')//left join with category entity,alias 'c'
+                    ->leftJoin('p.stocks','s') //left join with stock entity alias s
+                    ->leftJoin('s.store','st')//left join with store entity alias st
+                    ->addSelect('c','s','st')//select category,stock,store
+                    ;
+                    if($categoryId){
+                        $queryBuilder->andWhere('c.id=:categoryId')
+                                    ->setParameter('categoryId',$categoryId);
+                    }
+                    if($storeId){
+                        $queryBuilder->andWhere('st.id=:storeId')
+                                    ->setParameter('storeId',$storeId);
+                    }
+                    if($minStock!== null){
+                        $queryBuilder->andWhere('s.quantity>=:minStock')
+                                    ->setParameter('minStock',$minStock);
+                    }
+                    return $queryBuilder->getQuery()->getResult();
+
+    
+                }               
     //    /**
     //     * @return Product[] Returns an array of Product objects
     //     */

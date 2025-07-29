@@ -6,29 +6,43 @@
 <div class="container mt-5">
     <h2 class="mb-4 page-title">All Products</h2>
     
-    <!-- Enhanced Category Filter -->
+    <!-- Filters -->
     <div class="mb-4">
         <div class="card shadow-sm">
             <div class="card-body">
                 <h5 class="card-title mb-3">
-                    <i class="bi bi-funnel me-2"></i>Filter by Category
+                    <i class="bi bi-funnel me-2"></i>Filters
                 </h5>
-                <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ path('client.product.home') }}" 
-                       class="btn btn-outline-secondary category-filter-btn">
-                        <i class="bi bi-grid-3x3-gap me-1"></i>All Categories
-                    </a>
-                    {% for category in categories %}
-                        <a href="{{ path('client.product.home', {category: category.id}) }}" 
-                           class="btn btn-outline-primary category-filter-btn {% if selected == category.id %}active{% endif %}">
-                            <i class="bi bi-tag me-1"></i>{{ category.name }}
-                        </a>
-                    {% endfor %}
-                </div>
+                <form method="get" class="d-flex flex-wrap gap-2">
+                    <select name="category" class="form-select w-auto d-inline-block">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <select name="store" class="form-select w-auto d-inline-block">
+                        <option value="">All Stores</option>
+                        {% for store in stores %}
+                            <option value="{{ store.id }}" {% if selectedStore == store.id %}selected{% endif %}>
+                                {{ store.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <select name="min_stock" class="form-select w-auto d-inline-block">
+                        <option value="">Minimum Stock</option>
+                        <option value="1" {% if selectedMinStock == 1 %}selected{% endif %}>1+</option>
+                        <option value="5" {% if selectedMinStock == 5 %}selected{% endif %}>5+</option>
+                        <option value="10" {% if selectedMinStock == 10 %}selected{% endif %}>10+</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </form>
             </div>
         </div>
     </div>
     
+    <!-- Product Grid -->
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for product in products %}
             <div class="col">
