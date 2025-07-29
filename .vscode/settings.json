@@ -1,3 +1,5 @@
 {
-    "Codegeex.RepoIndex": true
+    "Codegeex.RepoIndex": true,
+    "Codegeex.GenerationPreference": "automatic",
+    "Codegeex.SidebarUI.LanguagePreference": "English"
 }

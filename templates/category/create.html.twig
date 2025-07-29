@@ -1,21 +1,40 @@
-{% extends 'base.html.twig'%}
-{% block title%}Create{% endblock %}
+{% extends 'base.html.twig' %}
+{% block title %}Create Category{% endblock %}
 {% block body %}
-    <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    </style>
-     <div class="row">
-        <div class="col-6 mx-auto" >
-            <h1 class="display-4 my-5 text-center">New Category </h1>
-            {{form_start(form)}}            
-                {{form_row(form.name)}}            
-                {{form_row(form.slug)}}            
-                {{form_row(form.description)}}            
-                <button type="submit" class="btn btn-primary w-100" > Add Category  </button> 
-            {{form_end(form)}} <br>
-            <a href="{{ path('owner.category.home') }}" class="btn btn-secondary w-100 ">← Go back to Category home page </a>
-
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h1 class="h4 mb-0 text-center">Create New Category</h1>
+                </div>
+                <div class="card-body p-4">
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.name, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.name, {'attr': {'class': 'form-control form-control-lg'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.slug, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.slug, {'attr': {'class': 'form-control'}}) }}
+                            <div class="form-text">URL-friendly version of the name</div>
+                        </div>
+                        <div class="mb-4">
+                            {{ form_label(form.description, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100 py-2">
+                            <i class="bi bi-plus-circle me-2"></i>Create Category
+                        </button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            <div class="mt-4 text-center">
+                <a href="{{ path('owner.category.home') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Categories
+                </a>
+            </div>
         </div>
-   </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,45 +1,88 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}All Products{% endblock %}
-
 {% block body %}
-<div class="container mt-4">
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Product Inventory</h1>
+        <a href="{{ path('owner.product.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Add New Product
+        </a>
+    </div>
 
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>Product Name</th>
-                <th>Total Stock</th>
-                <th>Available In</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in productsWithData %}
-            <tr>
-                <td>
-                    <a href="{{ path('owner.product.show', {id: item.product.id}) }}">
-                        {{ item.product.name }}
-                    </a>
-                </td>
-                <td>{{ item.totalStock }}</td>
-                <td>
-                    <span class="badge bg-primary">{{ item.storeCount }} store(s)</span>
-                </td>
-                <td>
-                    <div class="btn-group btn-group-sm">
-                        <a href="{{ path('owner.product.show', {id: item.product.id}) }}" 
-                           class="btn btn-info">Show</a>
-                        <a href="{{ path('owner.product.edit', {id: item.product.id}) }}" 
-                           class="btn btn-warning">Edit</a>
-                        <a href="{{ path('owner.product.delete', {id: item.product.id}) }}" 
-                           class="btn btn-danger btn-delete">Delete</a>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Product</th>
+                            <th>Price</th>
+                            <th>Total Stock</th>
+                            <th>Stores</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in productsWithData %}
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    {% if item.product.image %}
+                                    <img src="{{ asset('uploads/products/' ~ item.product.image) }}" 
+                                         class="rounded me-3" 
+                                         style="width: 60px; height: 60px; object-fit: cover" 
+                                         alt="{{ item.product.name }}">
+                                    {% else %}
+                                    <div class="bg-light rounded p-2 me-3">
+                                        <i class="bi bi-image text-muted" style="font-size: 1.5rem"></i>
+                                    </div>
+                                    {% endif %}
+                                    <div>
+                                        <strong>{{ item.product.name }}</strong>
+                                        <div class="text-muted small mt-1">
+                                            {{ item.product.category.name }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ item.product.price }} TND</td>
+                            <td>
+                                <span class="badge bg-{{ item.totalStock > 20 ? 'success' : (item.totalStock > 5 ? 'warning' : 'danger') }} fs-6">
+                                    {{ item.totalStock }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ item.storeCount }} store(s)</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group">
+                                    <a href="{{ path('owner.product.show', {id: item.product.id}) }}" 
+                                       class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ path('owner.product.edit', {id: item.product.id}) }}" 
+                                       class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{{ path('owner.product.delete', {id: item.product.id}) }}" 
+                                       class="btn btn-sm btn-outline-danger btn-delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-exclamation-circle me-2"></i>No products found
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -47,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const deleteLinks = document.querySelectorAll('.btn-delete');
   deleteLinks.forEach(function(link) {
     link.addEventListener('click', function(event) {
-      if (!confirm('Are you sure you want to delete this product?')) {
+      if (!confirm('Are you sure you want to delete this product?\nThis will remove all associated stock records.')) {
         event.preventDefault();
       }
     });

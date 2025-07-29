@@ -24,23 +24,23 @@ final class BucketController extends AbstractController
 {
     private ?Client $client=null;
     private function getClient(): Client // Changez le type de retour en Client
-{
-    if (!$this->client) {
-        $user = $this->getUser();
-        
-        if (!$user) {
-            throw $this->createAccessDeniedException('You must be logged in');
+    {
+        if (!$this->client) {
+            $user = $this->getUser();
+            
+            if (!$user) {
+                throw $this->createAccessDeniedException('You must be logged in');
+            }
+            
+            if (!$user instanceof Client) {
+                throw $this->createAccessDeniedException('Invalid user type');
+            }
+            
+            $this->client = $user;
         }
         
-        if (!$user instanceof Client) {
-            throw $this->createAccessDeniedException('Invalid user type');
-        }
-        
-        $this->client = $user;
+        return $this->client;
     }
-    
-    return $this->client;
-}
     
     //this is the part where we show all products in the bucket 
     #[Route('/home', name: 'home')]
@@ -91,11 +91,13 @@ final class BucketController extends AbstractController
     //this method will be exectued when clicking on button update in the bucket home page 
     #[Route('/update/{id}',name:'update')]
     public function updateProduct (Product $product,BucketSession $bucketSession,Request $request){
-       $quantity=$request->request->getInt('quantite',1);
+        $quantity=$request->request->getInt('quantite',1);
         $bucketSession->updateQuantity($product->getId(),$quantity);
         $this->addFlash('success','Product updated  ');
         return $this->redirectToRoute('client.bucket.home');
     }
+
+
     #[Route('/validate',name:'validate')]
     public function validateBucket(BucketSession $bucketSession,EntityManagerInterface $em,ProductRepository $productRepo,CreateOrder_OrderLine $create)
     {
@@ -121,6 +123,8 @@ final class BucketController extends AbstractController
             'id'=>$order->getId()
         ]);
     }
+
+    
     #[Route('/confirmation/{id}', name: 'confirmation')]
     public function confirmation(Order $order): Response
     {
