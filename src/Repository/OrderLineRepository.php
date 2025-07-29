@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\OrderLine;
+use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,7 +16,14 @@ class OrderLineRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, OrderLine::class);
     }
-
+    public function VerifyOrderline(Product $product){
+        return $this->createQueryBuilder('ol')
+                    ->select('Count(ol.id)')
+                    ->andWhere('ol.product = :product')
+                    ->setParameter('product',$product)
+                    ->getQuery()
+                    ->getSingleScalarResult();
+    }
     //    /**
     //     * @return OrderLine[] Returns an array of OrderLine objects
     //     */

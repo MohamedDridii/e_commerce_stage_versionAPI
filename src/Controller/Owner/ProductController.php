@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Entity\Stock;
 use App\Entity\Store;
 use App\Form\ProductType;
+use App\Repository\OrderLineRepository;
 use App\Repository\ProductRepository;
 use App\Repository\StockRepository;
 use App\Repository\StoreRepository;
@@ -161,12 +162,25 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/{id}/delete',name:'delete')]
-    public function Deleteproduct(Product $product,EntityManagerInterface $em,Request $request):Response
+    public function Deleteproduct(Product $product,EntityManagerInterface $em,StockRepository $stockRepo,OrderLineRepository $orderline):Response
     {
-        $em->remove($product);
-        $em->flush();
-        $this->addFlash('success','product deleted ');
-        return $this->redirectToRoute('owner.product.home');
+        // 1. any stock anywhere?
+        $totalStock = $stockRepo->findRemainigStock($product);
+        if ($totalStock > 0) {
+            $this->addFlash('danger', 'Cannot delete: product still has stock.');
+            return $this->redirectToRoute('owner.product.home');
+        }
+        // 2. any order lines?
+        $orderCount = $orderline->VerifyOrderline($product);
+
+        if ($orderCount > 0) {
+            $this->addFlash('danger', 'Cannot delete: product is linked to orders.');
+            return $this->redirectToRoute('owner.product.home');
+        }
+            $em->remove($product);
+            $em->flush();
+            $this->addFlash('success','product deleted ');
+            return $this->redirectToRoute('owner.product.home');
     }
 
     #[Route('/{id}', name: 'show',)]

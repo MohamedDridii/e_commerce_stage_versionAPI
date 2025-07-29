@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Product;
 use App\Entity\Stock;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,6 +40,15 @@ class StockRepository extends ServiceEntityRepository
             ')
             ->setParameter('productId', $productId)
             ->getResult();
+    }
+    
+    public function findRemainigStock(Product $product){
+        return $this->createQueryBuilder('s')
+                    ->select('COALESCE(SUM(s.quantity),0)')
+                    ->where('s.product = :Product')
+                    ->setParameter('Product', $product)
+                    ->getQuery()
+                    ->getSingleScalarResult();
     }
     //    /**
     //     * @return Stock[] Returns an array of Stock objects
