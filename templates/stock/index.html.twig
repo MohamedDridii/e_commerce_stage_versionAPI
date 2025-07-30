@@ -38,7 +38,9 @@
                 </td>
                 <td>{{ stock.quantity }}</td>
                 <td>
-                    {% if stock.quantity < 5 %}
+                    {% if stock.quantity == 0 %}
+                        <span class="badge bg-danger">Out of Stock ({{ stock.quantity }})</span>
+                    {% elseif stock.quantity < 5 %}
                         <span class="badge bg-danger">Critical ({{ stock.quantity }})</span>
                     {% elseif stock.quantity < 10 %}
                         <span class="badge bg-warning">Low ({{ stock.quantity }})</span>

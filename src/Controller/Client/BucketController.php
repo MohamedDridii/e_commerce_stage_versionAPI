@@ -11,6 +11,7 @@ use App\Services\BucketSession;
 use App\Services\CreateOrder_OrderLine;
 use App\Services\OrderManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,17 +106,44 @@ final class BucketController extends AbstractController
         $bucketData=$bucketSession->getBucket();
         if(empty($bucketData))
         {
-            $this->addFlash('error','Your Bucket is emptyyyyyyyy shop you motherfucker!!!');
+            $this->addFlash('error','Your Bucket is empty');
             return $this->redirectToRoute('client.bucket.home');
         }
-        //creation de commande 
-        $order=$create->createOrder($client);
-        //add orderLine
+        
+        //verify if the quantity is availbel or  not and create order 
         foreach($bucketData as $productId=>$quantity)
         {
             $product=$productRepo->find($productId);
-            $create->createOrderLine($order,$product,$quantity);
+            $availble=$productRepo->countTotalStock($product);
+            if($availble<$quantity)
+            {
+                $this->addFlash('danger','Product '.$product->getName().' is not available in quantity '.$quantity);
+                return $this->redirectToRoute('client.product.home');
+            }
         }
+        //create order 
+        $order=$create->createOrder($client);
+
+        foreach ($bucketData as $productId => $qtyNeeded)
+        {
+            $product = $productRepo->find($productId);
+            $create->createOrderLine($order, $product, $qtyNeeded);
+
+            // Clone the collection so we can iterate safely while modifying
+            $stocks = new ArrayCollection($product->getStocks()->toArray());
+
+            $qtyLeft = $qtyNeeded;
+            foreach ($stocks as $stock) 
+            {
+                if ($qtyLeft <= 0) break;
+
+                $qtyInRow = $stock->getQuantity();
+                $deduct   = min($qtyLeft, $qtyInRow);
+
+                $stock->setQuantity($qtyInRow - $deduct);
+                $qtyLeft -= $deduct;
+            }
+        }        
         $em->flush();
         $bucketSession->clear();
         $this->addFlash('success','Order Validated!!');
