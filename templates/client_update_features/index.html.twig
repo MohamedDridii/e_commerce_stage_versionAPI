@@ -1,0 +1,46 @@
+{% extends 'base_client.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1>Edit Profile</h1>
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.password) }}
+                        {{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.password) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.agreeTerms) }}
+                        {{ form_widget(form.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_errors(form.agreeTerms) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.adress) }}
+                        {{ form_widget(form.adress, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.adress) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.phoneNumber) }}
+                        {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.phoneNumber) }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
