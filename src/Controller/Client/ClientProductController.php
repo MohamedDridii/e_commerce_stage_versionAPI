@@ -38,7 +38,7 @@ final class ClientProductController extends AbstractController
             'products' => $products,
             'categories'=>$categories,
             'stores'=>$stores,
-            'selectedCategory'=>$categoryId,
+            'selectedCategory'=>$categoryId,//we have sent those id so that the view can put as elected filed when secting the field 
             'selectedStore'=>$storeId,
             'selectedMinStock'=>$minstock,
             'search'=>$searchQuery,

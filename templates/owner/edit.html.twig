@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1>Edit Profile</h1>
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.plainPassword) }}
+                        {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.plainPassword) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.agreeTerms) }}
+                        {{ form_widget(form.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_errors(form.agreeTerms) }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
