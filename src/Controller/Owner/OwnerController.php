@@ -4,6 +4,7 @@ namespace App\Controller\Owner;
 
 use App\Form\RegistrationFormType;
 use App\Repository\ProductRepository;
+use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,15 +17,19 @@ final class OwnerController extends AbstractController
 {
     #[IsGranted('ROLE_OWNER')]
     #[Route('/home', name: 'home')]
-    public function index(ProductRepository $repo): Response
+    public function index(ProductRepository $repo,OrderRepository $orderRepo): Response
     {
         $products=$repo->findAll();
         $totStock=0;
         foreach($products as $product){
             $totStock+= $product->getTotalStock();
         }
+        $TotalOrdersToday=$orderRepo->CountOrdersToday();
+        $TotalProfitToday=$orderRepo->countProfitToday();
         return $this->render('owner/owner.html.twig', [
-            'totalProductsInStock'=>$totStock
+            'totalProductsInStock'=>$totStock,
+            'totalOrdersToday'=>$TotalOrdersToday,
+            'totalProfitToday'=>$TotalProfitToday
         ]);
     }
     #[Route('/edit',name:'edit')]

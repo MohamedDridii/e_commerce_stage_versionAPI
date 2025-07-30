@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Order;
 use App\Entity\Client;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,7 +18,30 @@ class OrderRepository extends ServiceEntityRepository
         parent::__construct($registry, Order::class);
     }
    
-
+    public function countOrdersToday()
+    {
+        $today=new DateTimeImmutable('today');
+        $tommorow=(new DateTimeImmutable('today'))->modify('+1 day');
+        $qb=$this->createQueryBuilder('o')
+                ->select('COUNT(o.id)')
+                ->where('o.createdAt BETWEEN :today AND :tommorow')
+                ->setParameter('today',$today)
+                ->setParameter('tommorow',$tommorow);
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+    public function CountProfitToday()
+    {
+        $today=new DateTimeImmutable('today');
+        $tommorow=(new DateTimeImmutable('today'))->modify('+1 day');
+        $qb=$this->createQueryBuilder('o')
+                ->select('SUM(ol.quantity * p.price)')
+                ->leftJoin('o.orderLines','ol')
+                ->leftJoin('ol.product','p')
+                ->where('o.createdAt BETWEEN :today AND :tommorow')
+                ->setParameter('today',$today)
+                ->setParameter('tommorow',$tommorow);
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
     //    /**
     //     * @return Order[] Returns an array of Order objects
     //     */
