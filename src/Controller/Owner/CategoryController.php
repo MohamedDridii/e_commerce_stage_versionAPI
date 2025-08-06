@@ -20,7 +20,7 @@ final class CategoryController extends AbstractController
     public function CategoryList(CategoryRepository $repo): Response
     {
         $list=$repo->findAll();
-
+        
         return $this->render('category/index.html.twig', [
             'list'=>$list
         ]);

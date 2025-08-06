@@ -3,7 +3,6 @@
 namespace App\Controller\Api\OwnerApi;
 
 use App\Entity\User;
-use App\Form\RegistrationFormType;
 use App\Repository\ProductRepository;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
