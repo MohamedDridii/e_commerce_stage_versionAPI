@@ -6,6 +6,7 @@ use App\Repository\StoreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StoreRepository::class)]
 class Store
@@ -15,16 +16,18 @@ class Store
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups('store:read')]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
-
+    
+    #[Groups('store:read')]
     #[ORM\Column(length: 255)]
     private ?string $adress = null;
 
     /**
      * @var Collection<int, Stock>
      */
-    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'store', orphanRemoval: true)]
+     #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'store', orphanRemoval: true)]
     private Collection $stocks;
 
     public function __construct()

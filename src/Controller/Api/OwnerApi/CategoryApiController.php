@@ -62,7 +62,7 @@ class CategoryApiController extends AbstractController
     }
 
     #[Route('/api/category/create',name:'api.category.create',methods:['POST'])]
-    public function createCategory(Request $request)
+    public function createCategories(Request $request)
     {
         try
         {
