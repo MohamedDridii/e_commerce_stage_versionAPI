@@ -33,7 +33,7 @@ class StockRepository extends ServiceEntityRepository
     public function findStoresByProductIdDQL(int $productId){
         return $this->getEntityManager()
             ->createQuery('
-                SELECT s.id, s.name, s.adress, st.quantity
+                SELECT s.name, s.adress, st.quantity
                 FROM App\Entity\Stock st 
                 JOIN st.store s
                 WHERE st.product = :productId
@@ -42,7 +42,7 @@ class StockRepository extends ServiceEntityRepository
             ->getResult();
     }
     
-    public function findRemainigStock(Product $product){
+    public function findRemainingStock(Product $product){
         return $this->createQueryBuilder('s')
                     ->select('COALESCE(SUM(s.quantity),0)')
                     ->where('s.product = :Product')

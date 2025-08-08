@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -17,26 +19,48 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product:read', 'product:detail', 'product:write'])]
+    #[Assert\NotBlank(message: 'Product name is required')]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: 'Product name must be at least {{ limit }} characters long',
+        maxMessage: 'Product name cannot be longer than {{ limit }} characters'
+    )]
     private ?string $name = null;
 
-    
     #[ORM\Column(length: 255)]
+    #[Groups(['product:read', 'product:detail', 'product:write'])]
+    #[Assert\NotBlank(message: 'Product price is required')]
+    #[Assert\Regex(
+        pattern: '/^\d+(\.\d{1,2})?$/',
+        message: 'Price must be a valid number with up to 2 decimal places'
+    )]
     private ?string $price = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product:read', 'product:detail', 'product:write'])]
+    #[Assert\NotBlank(message: 'Product image is required')]
     private ?string $image = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['product:read', 'product:detail', 'product:write'])]
+    #[Assert\NotBlank(message: 'Product description is required')]
+    #[Assert\Length(
+        min: 10,
+        minMessage: 'Description must be at least {{ limit }} characters long'
+    )]
     private ?string $description = null;
 
     /**
      * @var Collection<int, Stock>
      */
-    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'product', orphanRemoval: true)]//cascade: ['remove'] si je veux que tous le stock supprime lorsque je supprime un produit 
+    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'product', orphanRemoval: true)]
     private Collection $stocks;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['product:read', 'product:detail'])]
     private ?Category $category = null;
 
     /**
@@ -51,8 +75,6 @@ class Product
         $this->orderLines = new ArrayCollection();
     }
 
-   
-
     public function getId(): ?int
     {
         return $this->id;
@@ -66,11 +88,8 @@ class Product
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
-
-    
 
     public function getPrice(): ?string
     {
@@ -80,7 +99,6 @@ class Product
     public function setPrice(string $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
@@ -92,7 +110,6 @@ class Product
     public function setImage(string $image): static
     {
         $this->image = $image;
-
         return $this;
     }
 
@@ -104,7 +121,6 @@ class Product
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -122,19 +138,16 @@ class Product
             $this->stocks->add($stock);
             $stock->setProduct($this);
         }
-
         return $this;
     }
 
     public function removeStock(Stock $stock): static
     {
         if ($this->stocks->removeElement($stock)) {
-            // set the owning side to null (unless already changed)
             if ($stock->getProduct() === $this) {
                 $stock->setProduct(null);
             }
         }
-
         return $this;
     }
 
@@ -146,10 +159,10 @@ class Product
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
-
         return $this;
     }
-    
+
+    #[Groups(['product:read', 'product:detail'])]
     public function getTotalStock(): int
     {
         $total = 0;
@@ -173,21 +186,16 @@ class Product
             $this->orderLines->add($orderLine);
             $orderLine->setProduct($this);
         }
-
         return $this;
     }
 
     public function removeOrderLine(OrderLine $orderLine): static
     {
         if ($this->orderLines->removeElement($orderLine)) {
-            // set the owning side to null (unless already changed)
             if ($orderLine->getProduct() === $this) {
                 $orderLine->setProduct(null);
             }
         }
-
         return $this;
     }
-
-    
 }
