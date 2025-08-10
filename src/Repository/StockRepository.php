@@ -30,6 +30,19 @@ class StockRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findAllWithDetailsForApi()
+    {
+        return $this->createQueryBuilder('s')
+            ->join('s.product', 'p')
+            ->join('p.category', 'c')
+            ->join('s.store', 'st')
+            ->addSelect('p')
+            ->addSelect('c')
+            ->addSelect('st')
+            ->orderBy('p.name', 'ASC')
+            ->getQuery()
+            ->getArrayResult();    
+    }
     public function findStoresByProductIdDQL(int $productId){
         return $this->getEntityManager()
             ->createQuery('
