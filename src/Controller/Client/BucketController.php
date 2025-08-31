@@ -10,6 +10,7 @@ use App\Repository\ProductRepository;
 use App\Services\BucketSession;
 use App\Services\CreateOrder_OrderLine;
 use App\Services\OrderManager;
+use App\Services\PdfGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use phpDocumentor\Reflection\Types\This;
@@ -159,5 +160,16 @@ final class BucketController extends AbstractController
         return $this->render('bucket/confirmation.html.twig', [
             'commande' => $order
         ]);
+    }
+    #[Route('/invoice/{id}', name: 'invoice')]
+    public function invoice(Order $order, PdfGenerator $pdfGenerator): Response
+    {
+        // Utilise un template Twig pour générer le HTML de la facture
+        $html = $this->renderView('bucket/invoice.html.twig', [
+            'commande' => $order
+        ]);
+
+        // Génère et télécharge le PDF
+        return $pdfGenerator->generatePdf($html, 'facture-'.$order->getNumeroCommande().'.pdf');
     }
 }

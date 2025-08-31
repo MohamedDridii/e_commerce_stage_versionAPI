@@ -157,10 +157,10 @@
             <i class="bi bi-arrow-left me-2"></i>Back to Catalogue
         </a>
         <div>
-            <a href="#" class="btn btn-secondary px-4 py-2 me-2">
+            <a href="{{ path('client.bucket.invoice', {id: commande.id}) }}" target="_blank"  class="btn btn-secondary px-4 py-2 me-2">
                 <i class="bi bi-printer me-2"></i>Print Invoice
             </a>
-            <a href="#" class="btn btn-primary px-4 py-2">
+            <a href="{{ path('client.bucket.invoice', {id: commande.id}) }}" class="btn btn-primary px-4 py-2">
                 <i class="bi bi-download me-2"></i>Download Invoice
             </a>
         </div>
