@@ -109,9 +109,17 @@ class Product
 
     public function setImage(string $image): static
     {
-        $this->image = $image;
+        // If the string looks like a full URL (starts with http or https), save it directly
+        if (preg_match('/^https?:\/\//', $image)) {
+            $this->image = $image;
+        } else {
+            // Otherwise treat it as a local file inside /public/uploads/products
+            $this->image = 'uploads/products/' . ltrim($image, '/');
+        }
+    
         return $this;
     }
+    
 
     public function getDescription(): ?string
     {

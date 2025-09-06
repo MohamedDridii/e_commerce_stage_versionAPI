@@ -28,7 +28,7 @@
                             <td class="ps-4">
                                 <div class="d-flex align-items-center">
                                     {% if item.product.image %}
-                                    <img src="{{ asset('uploads/products/' ~ item.product.image) }}" 
+                                    <img src="{{ item.product.image }}" 
                                          class="rounded me-3" 
                                          style="width: 60px; height: 60px; object-fit: cover" 
                                          alt="{{ item.product.name }}">

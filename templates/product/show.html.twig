@@ -13,7 +13,7 @@
         <div class="col-lg-5">
             <div class="card shadow-sm border-0">
                 {% if product.image %}
-                <img src="{{ asset('uploads/products/' ~ product.image) }}" 
+                <img src="{{ product.image }}" 
                      class="card-img-top object-fit-cover" 
                      style="height: 350px" 
                      alt="{{ product.name }}">

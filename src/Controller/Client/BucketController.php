@@ -5,21 +5,16 @@ namespace App\Controller\Client;
 use App\Entity\Product;
 use App\Entity\Order;
 use App\Entity\Client;
-use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use App\Services\BucketSession;
 use App\Services\CreateOrder_OrderLine;
-use App\Services\OrderManager;
 use App\Services\PdfGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Twig\Node\Expression\ReturnNumberInterface;
 
 #[Route('client/bucket', name: 'client.bucket.')]
 final class BucketController extends AbstractController

@@ -49,6 +49,7 @@ class CategoryApiService
             Category::class,
             'json',
             ['object_to_populate'=>$category,'groups'=>'category:read']);
+            // object_to_populate permet de remplacer les données de l'objet par les données du json
 
             $this->validateCategory($category);
             $this->em->persist($category);
