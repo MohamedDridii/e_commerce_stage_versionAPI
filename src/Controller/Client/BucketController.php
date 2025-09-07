@@ -165,6 +165,6 @@ final class BucketController extends AbstractController
         ]);
 
         // Génère et télécharge le PDF
-        return $pdfGenerator->generatePdf($html, 'facture-'.$order->getNumeroCommande().'.pdf');//
+        return $pdfGenerator->generatePdf($html, 'facture-'.$order->getNumeroCommande().'.pdf');
     }
 }
