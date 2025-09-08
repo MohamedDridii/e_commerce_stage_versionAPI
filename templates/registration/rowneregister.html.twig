@@ -1,137 +1,608 @@
 {% extends 'base_auth.html.twig' %}
 
-{% block title %}Business Owner Registration{% endblock %}
+{% block title %}Start Your Business - Orbex{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    .auth-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 420px;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .back-link {
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        color: white;
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    
+    .back-link:hover {
+        opacity: 1;
+        color: white;
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .orbex-logo {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 1rem;
+        color: #667eea;
+    }
+    
+    .auth-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 0.5rem;
+    }
+    
+    .auth-subtitle {
+        font-size: 0.875rem;
+        color: #718096;
+        margin-bottom: 0;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f7fafc;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-input::placeholder {
+        color: #a0aec0;
+    }
+    
+    .password-wrapper {
+        position: relative;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #a0aec0;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 4px;
+        transition: color 0.3s ease;
+    }
+    
+    .password-toggle:hover {
+        color: #667eea;
+    }
+    
+    .checkbox-group {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    
+    .checkbox-input {
+        margin-top: 0.25rem;
+        accent-color: #667eea;
+    }
+    
+    .checkbox-label {
+        font-size: 0.875rem;
+        color: #4a5568;
+        line-height: 1.4;
+    }
+    
+    .checkbox-label a {
+        color: #667eea;
+        text-decoration: none;
+    }
+    
+    .checkbox-label a:hover {
+        text-decoration: underline;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.875rem 1rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+        color: #a0aec0;
+        font-size: 0.875rem;
+    }
+    
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e2e8f0;
+        z-index: 1;
+    }
+    
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .social-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .social-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        color: #4a5568;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .social-btn:hover {
+        border-color: #cbd5e0;
+        background: #f7fafc;
+        color: #2d3748;
+    }
+    
+    .auth-footer {
+        text-align: center;
+        font-size: 0.875rem;
+        color: #718096;
+    }
+    
+    .auth-footer a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Business-themed illustrations */
+    .illustration-left {
+        position: absolute;
+        left: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 200px;
+        height: 300px;
+        opacity: 0.8;
+        z-index: 1;
+    }
+    
+    .illustration-right {
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 200px;
+        height: 300px;
+        opacity: 0.8;
+        z-index: 1;
+    }
+    
+    .business-person {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .person-body {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 120px;
+        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        border-radius: 40px 40px 20px 20px;
+    }
+    
+    .person-head {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 50px;
+        background: #fbbf24;
+        border-radius: 50%;
+    }
+    
+    .person-hair {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 30px;
+        background: #92400e;
+        border-radius: 30px 30px 0 0;
+    }
+    
+    .person-legs {
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 40px;
+        background: #374151;
+        border-radius: 0 0 20px 20px;
+    }
+    
+    .briefcase {
+        position: absolute;
+        bottom: 20px;
+        right: 10px;
+        width: 30px;
+        height: 20px;
+        background: #7c2d12;
+        border-radius: 4px;
+    }
+    
+    .briefcase::before {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 6px;
+        background: #7c2d12;
+        border-radius: 3px;
+    }
+    
+    .chart {
+        position: absolute;
+        bottom: 60px;
+        left: 10px;
+        width: 40px;
+        height: 30px;
+    }
+    
+    .chart-bar {
+        position: absolute;
+        bottom: 0;
+        width: 6px;
+        background: #10b981;
+        border-radius: 3px 3px 0 0;
+    }
+    
+    .chart-bar:nth-child(1) {
+        left: 0;
+        height: 15px;
+    }
+    
+    .chart-bar:nth-child(2) {
+        left: 8px;
+        height: 25px;
+    }
+    
+    .chart-bar:nth-child(3) {
+        left: 16px;
+        height: 20px;
+    }
+    
+    .chart-bar:nth-child(4) {
+        left: 24px;
+        height: 30px;
+    }
+    
+    .chart-bar:nth-child(5) {
+        left: 32px;
+        height: 18px;
+    }
+    
+    @media (max-width: 768px) {
+        .illustration-left,
+        .illustration-right {
+            display: none;
+        }
+        
+        .auth-card {
+            margin: 1rem;
+            padding: 2rem;
+            max-width: none;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-<div class="w-100">
-    <div class="text-center mb-5">
-        <div class="logo-icon mx-auto mb-3">
-            <i class="bi bi-building text-white fs-4"></i>
-        </div>
-        <h1 class="h4 fw-bold mb-3">Create Your Business Account</h1>
-        <p class="text-muted">Register as a business owner and start managing your store</p>
-    </div>
+<div class="auth-container">
+    <a href="#" class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to homepage
+    </a>
     
-    <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
-        <div class="card-body p-4">
-            {{ form_start(registrationForm, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-                {{ form_errors(registrationForm) }}
-                
-                <div class="mb-3">
-                    {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-envelope"></i>
-                        </span>
-                        {{ form_widget(registrationForm.email, {
-                            'attr': {
-                                'class': 'form-control form-control-lg',
-                                'placeholder': 'business@email.com'
-                            }
-                        }) }}
-                    </div>
-                    <div class="invalid-feedback">
-                        Please enter a valid business email.
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    {{ form_label(registrationForm.plainPassword, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-lock"></i>
-                        </span>
-                        {{ form_widget(registrationForm.plainPassword, {
-                            'attr': {
-                                'class': 'form-control form-control-lg',
-                                'placeholder': '••••••••'
-                            }
-                        }) }}
-                        <button class="btn btn-outline-secondary toggle-password" type="button">
-                            <i class="bi bi-eye-slash"></i>
-                        </button>
-                    </div>
-                    <div class="invalid-feedback">
-                        Password must be at least 8 characters.
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <div class="form-check">
-                        {{ form_widget(registrationForm.agreeTerms, {
-                            'attr': {'class': 'form-check-input'}
-                        }) }}
-                        {{ form_label(registrationForm.agreeTerms, null, {
-                            'label_attr': {'class': 'form-check-label'}
-                        }) }}
-                    </div>
-                </div>
-                
-                <div class="mb-4 p-3 border rounded bg-light">
-                    <h6 class="fw-medium mb-3"><i class="bi bi-info-circle me-2"></i>Business Owner Benefits</h6>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2">
-                            <i class="bi bi-check-circle text-success me-2"></i>Full store management capabilities
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-check-circle text-success me-2"></i>Product inventory control
-                        </li>
-                        <li class="mb-2">
-                            <i class="bi bi-check-circle text-success me-2"></i>Sales analytics and reports
-                        </li>
-                        <li>
-                            <i class="bi bi-check-circle text-success me-2"></i>Customer management tools
-                        </li>
-                    </ul>
-                </div>
-                
-                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">
-                    <i class="bi bi-building me-2"></i>Register Business Account
-                </button>
-            {{ form_end(registrationForm) }}
+    <!-- Left Illustration -->
+    <div class="illustration-left">
+        <div class="business-person">
+            <div class="person-hair"></div>
+            <div class="person-head"></div>
+            <div class="person-body"></div>
+            <div class="person-legs"></div>
+        </div>
+        <div class="briefcase"></div>
+        <div class="chart">
+            <div class="chart-bar"></div>
+            <div class="chart-bar"></div>
+            <div class="chart-bar"></div>
+            <div class="chart-bar"></div>
+            <div class="chart-bar"></div>
         </div>
     </div>
     
-    <div class="text-center mt-4">
-        <p class="text-muted mb-0">Already have an account?</p>
-        <a href="{{ path('app_login') }}" class="btn btn-link text-primary fw-medium">
-            <i class="bi bi-box-arrow-in-right me-1"></i>Sign in to your account
-        </a>
-        <div class="mt-3">
-            <p class="text-muted mb-1">Looking for a customer account?</p>
-            <a href="{{ path('client.register') }}" class="btn btn-outline-dark btn-sm">
-                Register as customer instead
-            </a>
+    <!-- Right Illustration -->
+    <div class="illustration-right">
+        <div class="business-person">
+            <div class="person-hair" style="background: #7c2d12;"></div>
+            <div class="person-head"></div>
+            <div class="person-body" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);"></div>
+            <div class="person-legs"></div>
+        </div>
+        <div class="briefcase" style="left: 10px;"></div>
+    </div>
+    
+    <!-- Main Form Card -->
+    <div class="auth-card">
+        <div class="auth-header">
+            <svg class="orbex-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
+                <circle cx="16" cy="16" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.6"/>
+                <circle cx="16" cy="16" r="6" stroke="currentColor" stroke-width="2" fill="none"/>
+                <circle cx="16" cy="16" r="2" fill="currentColor"/>
+                <circle cx="26" cy="16" r="1.5" fill="currentColor">
+                    <animateTransform attributeName="transform" type="rotate" values="0 16 16;360 16 16" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="6" cy="16" r="1" fill="currentColor" opacity="0.7">
+                    <animateTransform attributeName="transform" type="rotate" values="0 16 16;-360 16 16" dur="6s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+            <h1 class="auth-title">Start your business</h1>
+            <p class="auth-subtitle">Create your business account</p>
+        </div>
+        
+        {{ form_start(registrationForm) }}
+            <div class="form-group">
+                {{ form_label(registrationForm.email, 'Business Email', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-input', 'placeholder': 'business@company.com'}}) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(registrationForm.plainPassword, 'Password', {'label_attr': {'class': 'form-label'}}) }}
+                <div class="password-wrapper">
+                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-input', 'placeholder': 'Create a strong password'}}) }}
+                    <button class="password-toggle" type="button">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(registrationForm.name, 'Full Name', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.name, {'attr': {'class': 'form-input', 'placeholder': 'Your full name'}}) }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form_label(registrationForm.phone, 'Phone Number', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(registrationForm.phone, {'attr': {'class': 'form-input', 'placeholder': '+216 XX XXX XXX'}}) }}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(registrationForm.address, 'Business Address', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.address, {'attr': {'class': 'form-input', 'placeholder': 'Your business address'}}) }}
+            </div>
+            
+            <div class="checkbox-group">
+                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'checkbox-input'}}) }}
+                {{ form_label(registrationForm.agreeTerms, 'I agree to the Business Terms and Privacy Policy', {'label_attr': {'class': 'checkbox-label'}}) }}
+            </div>
+            
+            <button type="submit" class="submit-btn">
+                <span class="btn-text">Create Business Account</span>
+                <div class="btn-loader">
+                    <div class="spinner"></div>
+                </div>
+            </button>
+        {{ form_end(registrationForm) }}
+        
+        <div class="divider">
+            <span>or</span>
+        </div>
+        
+        <div class="social-buttons">
+            <button class="social-btn">
+                <i class="bi bi-google" style="color: #ea4335;"></i>
+                Google
+            </button>
+            <button class="social-btn">
+                <i class="bi bi-linkedin" style="color: #0077b5;"></i>
+                LinkedIn
+            </button>
+        </div>
+        
+        <div class="auth-footer">
+            Already have a business account? <a href="{{ path('app_login') }}">Sign in here</a>
         </div>
     </div>
 </div>
 
 <script>
-    // Toggle password visibility
-    document.querySelector('.toggle-password').addEventListener('click', function() {
-        const passwordInput = document.getElementById('{{ registrationForm.plainPassword.vars.id }}');
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
-        const icon = this.querySelector('i');
-        icon.classList.toggle('bi-eye');
-        icon.classList.toggle('bi-eye-slash');
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    // Password toggle functionality
+    const passwordToggle = document.querySelector('.password-toggle');
+    const passwordInput = document.getElementById('password');
+    
+    if (passwordToggle && passwordInput) {
+        passwordToggle.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            icon.classList.toggle('bi-eye');
+            icon.classList.toggle('bi-eye-slash');
+        });
+    }
 
-    // Form validation
-    document.addEventListener('DOMContentLoaded', function() {
-        const forms = document.querySelectorAll('.needs-validation');
+    // Form validation and animations
+    const form = document.querySelector('form');
+    const inputs = document.querySelectorAll('.form-input');
+    const submitBtn = document.querySelector('.submit-btn');
+    
+    // Input focus animations
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
         
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                
-                form.classList.add('was-validated');
-            }, false);
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentElement.classList.remove('focused');
+            }
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.value) {
+                this.parentElement.classList.add('has-value');
+            } else {
+                this.parentElement.classList.remove('has-value');
+            }
+        });
+        
+        // Check initial values
+        if (input.value) {
+            input.parentElement.classList.add('has-value');
+        }
+    });
+    
+    // Form submission
+    if (form && submitBtn) {
+        form.addEventListener('submit', function(e) {
+            // Show loading state
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+        });
+    }
+    
+    // Social button interactions
+    const socialBtns = document.querySelectorAll('.social-btn');
+    socialBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.add('clicked');
+            setTimeout(() => {
+                this.classList.remove('clicked');
+            }, 200);
         });
     });
+});
 </script>
 {% endblock %}

@@ -1,132 +1,715 @@
 {% extends 'base_auth.html.twig' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Sign In - Orbex{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    .auth-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 420px;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .back-link {
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        color: white;
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    
+    .back-link:hover {
+        opacity: 1;
+        color: white;
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .orbex-logo {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 1rem;
+        color: #667eea;
+    }
+    
+    .auth-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 0.5rem;
+    }
+    
+    .auth-subtitle {
+        font-size: 0.875rem;
+        color: #718096;
+        margin-bottom: 0;
+    }
+    
+    .modern-alert {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .modern-alert.error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+    }
+    
+    .modern-alert.info {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #2563eb;
+    }
+    
+    .alert-icon {
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+    
+    .alert-content {
+        flex: 1;
+    }
+    
+    .alert-title {
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+        display: block;
+    }
+    
+    .alert-message {
+        font-size: 0.875rem;
+        margin: 0;
+    }
+    
+    .alert-action {
+        color: inherit;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: inline-block;
+    }
+    
+    .alert-close {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        margin-left: auto;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f7fafc;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-input::placeholder {
+        color: #a0aec0;
+    }
+    
+    .password-wrapper {
+        position: relative;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #a0aec0;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 4px;
+        transition: color 0.3s ease;
+    }
+    
+    .password-toggle:hover {
+        color: #667eea;
+    }
+    
+    .form-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 1.5rem 0;
+        font-size: 0.875rem;
+    }
+    
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .checkbox-input {
+        accent-color: #667eea;
+    }
+    
+    .checkbox-label {
+        color: #4a5568;
+    }
+    
+    .forgot-password {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .forgot-password:hover {
+        text-decoration: underline;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.875rem 1rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .submit-btn.loading {
+        pointer-events: none;
+    }
+    
+    .btn-text {
+        transition: opacity 0.3s ease;
+    }
+    
+    .submit-btn.loading .btn-text {
+        opacity: 0;
+    }
+    
+    .btn-loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .submit-btn.loading .btn-loader {
+        opacity: 1;
+    }
+    
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+        color: #a0aec0;
+        font-size: 0.875rem;
+    }
+    
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e2e8f0;
+        z-index: 1;
+    }
+    
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .social-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .social-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        color: #4a5568;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .social-btn:hover {
+        border-color: #cbd5e0;
+        background: #f7fafc;
+        color: #2d3748;
+        transform: translateY(-1px);
+    }
+    
+    .social-btn.clicked {
+        transform: translateY(0);
+    }
+    
+    .auth-footer {
+        text-align: center;
+        font-size: 0.875rem;
+        color: #718096;
+    }
+    
+    .footer-text {
+        margin-bottom: 1rem;
+    }
+    
+    .registration-options {
+        display: flex;
+        gap: 1rem;
+        flex-direction: column;
+    }
+    
+    .register-btn {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        color: #4a5568;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .register-btn:hover {
+        border-color: #667eea;
+        background: #f7fafc;
+        color: #2d3748;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    }
+    
+    .register-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+    }
+    
+    .register-content {
+        flex: 1;
+        text-align: left;
+    }
+    
+    .register-title {
+        display: block;
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .register-desc {
+        display: block;
+        font-size: 0.75rem;
+        color: #718096;
+    }
+    
+    /* Illustrations */
+    .illustration-left {
+        position: absolute;
+        left: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 200px;
+        height: 300px;
+        opacity: 0.8;
+        z-index: 1;
+    }
+    
+    .illustration-right {
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 200px;
+        height: 300px;
+        opacity: 0.8;
+        z-index: 1;
+    }
+    
+    .person {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .person-body {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 120px;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        border-radius: 40px 40px 20px 20px;
+    }
+    
+    .person-head {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 50px;
+        background: #fbbf24;
+        border-radius: 50%;
+    }
+    
+    .person-hair {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 30px;
+        background: #92400e;
+        border-radius: 30px 30px 0 0;
+    }
+    
+    .person-legs {
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 40px;
+        background: #1e40af;
+        border-radius: 0 0 20px 20px;
+    }
+    
+    .plant {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        width: 40px;
+        height: 60px;
+    }
+    
+    .plant-pot {
+        position: absolute;
+        bottom: 0;
+        width: 40px;
+        height: 20px;
+        background: #d97706;
+        border-radius: 0 0 20px 20px;
+    }
+    
+    .plant-leaf {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 8px;
+        height: 30px;
+        background: #10b981;
+        border-radius: 4px;
+    }
+    
+    .plant-leaf:nth-child(2) {
+        transform: translateX(-50%) rotate(-20deg);
+        left: 40%;
+    }
+    
+    .plant-leaf:nth-child(3) {
+        transform: translateX(-50%) rotate(20deg);
+        left: 60%;
+    }
+    
+    @media (max-width: 768px) {
+        .illustration-left,
+        .illustration-right {
+            display: none;
+        }
+        
+        .auth-card {
+            margin: 1rem;
+            padding: 2rem;
+        }
+        
+        .registration-options {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-<div class="w-100">
-    <div class="text-center mb-5">
-        <div class="logo-icon mx-auto mb-3">
-            <i class="bi bi-shield-lock text-white fs-4"></i>
+<div class="auth-container">
+    <a href="#" class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to homepage
+    </a>
+    
+    <!-- Left Illustration -->
+    <div class="illustration-left">
+        <div class="person">
+            <div class="person-hair"></div>
+            <div class="person-head"></div>
+            <div class="person-body"></div>
+            <div class="person-legs"></div>
         </div>
-        <h1 class="display-5 fw-bold mb-3">Welcome to E-Commerce</h1>
-        <p class="text-muted">Sign in to access your personal dashboard</p>
+        <div class="plant">
+            <div class="plant-pot"></div>
+            <div class="plant-leaf"></div>
+            <div class="plant-leaf"></div>
+            <div class="plant-leaf"></div>
+        </div>
     </div>
     
-    {% if error %}
-        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-            {{ error.messageKey|trans(error.messageData, 'security') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <!-- Right Illustration -->
+    <div class="illustration-right">
+        <div class="person">
+            <div class="person-hair" style="background: #7c2d12;"></div>
+            <div class="person-head"></div>
+            <div class="person-body" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);"></div>
+            <div class="person-legs"></div>
         </div>
-    {% endif %}
-
-    {% if app.user %}
-        <div class="alert alert-info mb-4">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-info-circle me-2"></i>
-                <div>
-                    You are already logged in as <strong>{{ app.user.userIdentifier }}</strong>
-                </div>
-            </div>
-            <div class="mt-2">
-                <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-info">
-                    <i class="bi bi-box-arrow-right me-1"></i>Logout
-                </a>
-            </div>
-        </div>
-    {% endif %}
+    </div>
     
-    <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
-        <div class="card-body p-4">
-            <h2 class="h4 fw-bold mb-4 text-center">Login to your account</h2>
-            
-            <form method="post" class="needs-validation" novalidate>
-                <div class="mb-3">
-                    <label for="inputEmail" class="form-label fw-medium">
-                        <i class="bi bi-envelope me-1"></i>Email address
-                    </label>
-                    <input 
-                        type="email" 
-                        value="{{ last_username }}" 
-                        name="email" 
-                        id="inputEmail" 
-                        class="form-control form-control-lg" 
-                        placeholder="your@email.com" 
-                        autocomplete="email" 
-                        required 
-                        autofocus
-                    >
-                    <div class="invalid-feedback">
-                        Please enter a valid email address.
-                    </div>
+    <!-- Main Form Card -->
+    <div class="auth-card">
+        <div class="auth-header">
+            <svg class="orbex-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
+                <circle cx="16" cy="16" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.6"/>
+                <circle cx="16" cy="16" r="6" stroke="currentColor" stroke-width="2" fill="none"/>
+                <circle cx="16" cy="16" r="2" fill="currentColor"/>
+                <circle cx="26" cy="16" r="1.5" fill="currentColor">
+                    <animateTransform attributeName="transform" type="rotate" values="0 16 16;360 16 16" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="6" cy="16" r="1" fill="currentColor" opacity="0.7">
+                    <animateTransform attributeName="transform" type="rotate" values="0 16 16;-360 16 16" dur="6s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+            <h1 class="auth-title">Welcome back</h1>
+            <p class="auth-subtitle">Sign in to your account</p>
+        </div>
+        
+        <!-- Error Messages -->
+        {% if error %}
+            <div class="modern-alert error">
+                <div class="alert-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
                 </div>
-                
-                <div class="mb-3">
-                    <label for="inputPassword" class="form-label fw-medium">
-                        <i class="bi bi-lock me-1"></i>Password
-                    </label>
-                    <div class="input-group">
-                        <input 
-                            type="password" 
-                            name="password" 
-                            id="inputPassword" 
-                            class="form-control form-control-lg" 
-                            autocomplete="current-password" 
-                            required
-                        >
-                        <button class="btn btn-outline-secondary toggle-password" type="button">
-                            <i class="bi bi-eye-slash"></i>
-                        </button>
-                    </div>
-                    <div class="invalid-feedback">
-                        Please enter your password.
-                    </div>
+                <div class="alert-content">
+                    <span class="alert-title">Authentication Error</span>
+                    <p class="alert-message">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
                 </div>
-                
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="_remember_me" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe">
-                            Remember me
-                        </label>
-                    </div>
-                    <a href="#" class="text-decoration-none text-primary fw-medium">
-                        Forgot password?
+                <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        {% endif %}
+
+        {% if app.user %}
+            <div class="modern-alert info">
+                <div class="alert-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+                <div class="alert-content">
+                    <span class="alert-title">Already Signed In</span>
+                    <p class="alert-message">You are logged in as <strong>{{ app.user.userIdentifier }}</strong></p>
+                    <a href="{{ path('app_logout') }}" class="alert-action">
+                        <i class="bi bi-box-arrow-right me-1"></i>Sign Out
                     </a>
                 </div>
-                
-                <button class="btn btn-primary w-100 py-3 fw-bold" type="submit">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign in
-                </button>
-            </form>
+            </div>
+        {% endif %}
+        
+        <form method="post" novalidate>
+            <div class="form-group">
+                <label for="inputEmail" class="form-label">Your Email</label>
+                <input 
+                    type="email" 
+                    value="{{ last_username }}" 
+                    name="email" 
+                    id="inputEmail" 
+                    class="form-input" 
+                    placeholder="example@company.com" 
+                    autocomplete="email" 
+                    required 
+                    autofocus
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="inputPassword" class="form-label">Your Password</label>
+                <div class="password-wrapper">
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="inputPassword" 
+                        class="form-input" 
+                        placeholder="Password"
+                        autocomplete="current-password" 
+                        required
+                    >
+                    <button class="password-toggle" type="button">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            
+            <div class="form-options">
+                <div class="checkbox-group">
+                    <input type="checkbox" name="_remember_me" id="rememberMe" class="checkbox-input">
+                    <label for="rememberMe" class="checkbox-label">Remember me</label>
+                </div>
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+            
+            <button class="submit-btn" type="submit">
+                <span class="btn-text">Sign in</span>
+                <div class="btn-loader">
+                    <div class="spinner"></div>
+                </div>
+            </button>
+        </form>
+        
+        <div class="divider">
+            <span>or</span>
         </div>
-    </div>
-    
-    <div class="text-center mt-4">
-        <p class="text-muted mb-3">Or sign in with</p>
-        <div class="d-flex justify-content-center gap-3 mb-4">
-            <button type="button" class="btn btn-light border rounded-circle p-3">
-                <i class="bi bi-google fs-5"></i>
+        
+        <div class="social-buttons">
+            <button type="button" class="social-btn">
+                <i class="bi bi-google" style="color: #ea4335;"></i>
+                <span>Google</span>
             </button>
-            <button type="button" class="btn btn-light border rounded-circle p-3">
-                <i class="bi bi-facebook fs-5 text-primary"></i>
-            </button>
-            <button type="button" class="btn btn-light border rounded-circle p-3">
-                <i class="bi bi-twitter fs-5 text-info"></i>
+            <button type="button" class="social-btn">
+                <i class="bi bi-github" style="color: #333;"></i>
+                <span>GitHub</span>
             </button>
         </div>
-    </div>
-    
-    <div class="card border-0 rounded-lg mt-4">
-        <div class="card-body text-center p-3">
-            <p class="mb-2">Don't have an account?</p>
-            <div class="d-flex flex-column flex-md-row justify-content-center gap-2">
-                <a href="{{ path('app_register') }}" class="btn btn-outline-dark flex-fill">
-                    <i class="bi bi-person-plus me-2"></i>Register as Owner
+        
+        <div class="auth-footer">
+            <p class="footer-text">New to our platform?</p>
+            <div class="registration-options">
+                <a href="{{ path('client.register') }}" class="register-btn">
+                    <div class="register-icon">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div class="register-content">
+                        <span class="register-title">Join as Customer</span>
+                        <span class="register-desc">Shop and discover products</span>
+                    </div>
                 </a>
-                <a href="{{ path('client.register') }}" class="btn btn-dark flex-fill">
-                    <i class="bi bi-person-plus me-2"></i>Register as Client
+                <a href="{{ path('app_register') }}" class="register-btn">
+                    <div class="register-icon">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <div class="register-content">
+                        <span class="register-title">Join as Business</span>
+                        <span class="register-desc">Sell and manage your store</span>
+                    </div>
                 </a>
             </div>
         </div>
@@ -134,31 +717,72 @@
 </div>
 
 <script>
-    // Toggle password visibility
-    document.querySelector('.toggle-password').addEventListener('click', function() {
-        const passwordInput = document.getElementById('inputPassword');
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
-        const icon = this.querySelector('i');
-        icon.classList.toggle('bi-eye');
-        icon.classList.toggle('bi-eye-slash');
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    // Password toggle functionality
+    const passwordToggle = document.querySelector('.password-toggle');
+    const passwordInput = document.getElementById('inputPassword');
+    
+    if (passwordToggle && passwordInput) {
+        passwordToggle.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            icon.classList.toggle('bi-eye');
+            icon.classList.toggle('bi-eye-slash');
+        });
+    }
 
-    // Form validation
-    document.addEventListener('DOMContentLoaded', function() {
-        const forms = document.querySelectorAll('.needs-validation');
+    // Form validation and animations
+    const form = document.querySelector('form');
+    const inputs = document.querySelectorAll('.form-input');
+    const submitBtn = document.querySelector('.submit-btn');
+    
+    // Input focus animations
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
         
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                
-                form.classList.add('was-validated');
-            }, false);
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentElement.classList.remove('focused');
+            }
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.value) {
+                this.parentElement.classList.add('has-value');
+            } else {
+                this.parentElement.classList.remove('has-value');
+            }
+        });
+        
+        // Check initial values
+        if (input.value) {
+            input.parentElement.classList.add('has-value');
+        }
+    });
+    
+    // Form submission
+    if (form && submitBtn) {
+        form.addEventListener('submit', function(e) {
+            // Show loading state
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+        });
+    }
+    
+    // Social button interactions
+    const socialBtns = document.querySelectorAll('.social-btn');
+    socialBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.add('clicked');
+            setTimeout(() => {
+                this.classList.remove('clicked');
+            }, 200);
         });
     });
+});
 </script>
 {% endblock %}

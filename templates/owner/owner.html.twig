@@ -1,79 +1,253 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin Dashboard{% endblock %}
-{% block page_title %}Dashboard{% endblock %}
+{% block title %}Business Dashboard - Orbex{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
 
 {% block body %}
-<div class="dashboard-grid">
-    <!-- Dashboard Cards -->
-    <div class="dashboard-card">
-        <div class="card-icon orders">
-            <i class="bi bi-cart"></i>
+<!-- Welcome Section -->
+<div class="welcome-section">
+    <div class="welcome-content">
+        <h2 class="welcome-title">Welcome back, {{ app.user.email|split('@')|first|title }}!</h2>
+        <p class="welcome-subtitle">Here's what's happening with your Orbex business today</p>
+    </div>
+    <div class="welcome-actions">
+        <a href="{{ path('owner.product.create') }}" class="action-btn primary">
+            <i class="bi bi-plus-circle"></i>
+            <span>Quick Add Product</span>
+        </a>
+        <button class="action-btn secondary" onclick="showAnalytics()">
+            <i class="bi bi-graph-up"></i>
+            <span>View Analytics</span>
+        </button>
+    </div>
+</div>
+
+<!-- Modern Dashboard Cards -->
+<div class="modern-dashboard-grid">
+    <div class="modern-dashboard-card orders">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="bi bi-bag-check"></i>
+            </div>
+            <div class="card-trend positive">
+                <i class="bi bi-trending-up"></i>
+                <span>+12%</span>
+            </div>
         </div>
-        <div class="card-title">Today's Orders</div>
-        <div class="card-value" style="color: #2563eb;"> {{totalOrdersToday}} </div>
-        <div class="text-success small">
-            <i class="bi bi-arrow-up"></i> 12% from yesterday
+        <div class="card-content">
+            <h3 class="card-title">Today's Orders</h3>
+            <div class="card-value">{{ totalOrdersToday ?? 0 }}</div>
+            <p class="card-description">Orders received today</p>
+        </div>
+        <div class="card-footer">
+            <span class="trend-text">12% increase from yesterday</span>
         </div>
     </div>
     
-    <div class="dashboard-card">
-        <div class="card-icon revenue">
-            <i class="bi bi-currency-dollar"></i>
+    <div class="modern-dashboard-card revenue">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+            <div class="card-trend positive">
+                <i class="bi bi-trending-up"></i>
+                <span>+8%</span>
+            </div>
         </div>
-        <div class="card-title">Today's Revenue</div>
-        <div class="card-value" style="color: #10b981;"> {{totalProfitToday}}  TND</div>
-        <div class="text-success small">
-            <i class="bi bi-arrow-up"></i> 8% from yesterday
+        <div class="card-content">
+            <h3 class="card-title">Today's Revenue</h3>
+            <div class="card-value">{{ totalProfitToday ?? 0 }} <span class="currency">TND</span></div>
+            <p class="card-description">Total earnings today</p>
         </div>
-    </div>
-    
-    <div class="dashboard-card">
-        <div class="card-icon products">
-            <i class="bi bi-box-seam"></i>
-        </div>
-        <div class="card-title">Products in Stock</div>
-        <div class="card-value" style="color: #8b5cf6;">{{ totalProductsInStock }}</div>
-        <div class="text-secondary small">
-            Across all stores
+        <div class="card-footer">
+            <span class="trend-text">8% increase from yesterday</span>
         </div>
     </div>
     
-    <div class="dashboard-card">
-        <div class="card-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
-            <i class="bi bi-exclamation-triangle"></i>
+    <div class="modern-dashboard-card products">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="bi bi-boxes"></i>
+            </div>
+            <div class="card-info">
+                <i class="bi bi-info-circle"></i>
+            </div>
         </div>
-        <div class="card-title">Low Stock Items</div>
-        <div class="card-value" style="color: #ef4444;"> lowStockItems </div>
-        <div class="text-danger small">
-            Needs attention
+        <div class="card-content">
+            <h3 class="card-title">Products in Stock</h3>
+            <div class="card-value">{{ totalProductsInStock ?? 0 }}</div>
+            <p class="card-description">Across all your stores</p>
+        </div>
+        <div class="card-footer">
+            <span class="info-text">Total inventory items</span>
+        </div>
+    </div>
+    
+    <div class="modern-dashboard-card alerts">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <div class="card-trend negative">
+                <i class="bi bi-exclamation"></i>
+                <span>Alert</span>
+            </div>
+        </div>
+        <div class="card-content">
+            <h3 class="card-title">Low Stock Items</h3>
+            <div class="card-value">{{ lowStockItems ?? 0 }}</div>
+            <p class="card-description">Items need restocking</p>
+        </div>
+        <div class="card-footer">
+            <span class="alert-text">Requires immediate attention</span>
         </div>
     </div>
 </div>
 
-<!-- Quick Actions -->
-<h3 class="section-title">Quick Actions</h3>
-<div class="shortcuts-grid">
-    <a href="{{ path('owner.product.create') }}" class="shortcut-card">
-        <i class="bi bi-plus-square"></i>
-        <div class="title">Add Product</div>
-    </a>
+<!-- Quick Actions Section -->
+<div class="quick-actions-section">
+    <div class="section-header">
+        <h3 class="section-title">
+            <i class="bi bi-lightning"></i>
+            Quick Actions
+        </h3>
+        <p class="section-subtitle">Manage your business efficiently</p>
+    </div>
     
-    <a href="{{ path('owner.stock.home') }}" class="shortcut-card">
-        <i class="bi bi-box"></i>
-        <div class="title">Manage Stock</div>
-    </a>
-    
-    <a href="{{ path('owner.store.create') }}" class="shortcut-card">
-        <i class="bi bi-shop"></i>
-        <div class="title">Create Store</div>
-    </a>
-    
-    <a href="{{ path('owner.category.create') }}" class="shortcut-card">
-        <i class="bi bi-tags"></i>
-        <div class="title">Add Category</div>
-    </a>
+    <div class="modern-shortcuts-grid">
+        <a href="{{ path('owner.product.create') }}" class="modern-shortcut-card">
+            <div class="shortcut-icon add-product">
+                <i class="bi bi-plus-square"></i>
+            </div>
+            <div class="shortcut-content">
+                <h4 class="shortcut-title">Add Product</h4>
+                <p class="shortcut-desc">Create new products for your store</p>
+            </div>
+            <div class="shortcut-arrow">
+                <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+        
+        <a href="{{ path('owner.stock.home') }}" class="modern-shortcut-card">
+            <div class="shortcut-icon manage-stock">
+                <i class="bi bi-box-seam"></i>
+            </div>
+            <div class="shortcut-content">
+                <h4 class="shortcut-title">Manage Stock</h4>
+                <p class="shortcut-desc">Update inventory and stock levels</p>
+            </div>
+            <div class="shortcut-arrow">
+                <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+        
+        <a href="{{ path('owner.store.create') }}" class="modern-shortcut-card">
+            <div class="shortcut-icon create-store">
+                <i class="bi bi-shop"></i>
+            </div>
+            <div class="shortcut-content">
+                <h4 class="shortcut-title">Create Store</h4>
+                <p class="shortcut-desc">Set up a new store location</p>
+            </div>
+            <div class="shortcut-arrow">
+                <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+        
+        <a href="{{ path('owner.category.create') }}" class="modern-shortcut-card">
+            <div class="shortcut-icon add-category">
+                <i class="bi bi-tags"></i>
+            </div>
+            <div class="shortcut-content">
+                <h4 class="shortcut-title">Add Category</h4>
+                <p class="shortcut-desc">Organize products with categories</p>
+            </div>
+            <div class="shortcut-arrow">
+                <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+    </div>
 </div>
 
+<!-- Recent Activity Section -->
+<div class="recent-activity-section">
+    <div class="section-header">
+        <h3 class="section-title">
+            <i class="bi bi-clock-history"></i>
+            Recent Activity
+        </h3>
+        <a href="#" class="view-all-link">View All</a>
+    </div>
+    
+    <div class="activity-list">
+        <div class="activity-item">
+            <div class="activity-icon success">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div class="activity-content">
+                <h4 class="activity-title">New order received</h4>
+                <p class="activity-desc">Order #1234 for $125.50</p>
+                <span class="activity-time">2 minutes ago</span>
+            </div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon info">
+                <i class="bi bi-box"></i>
+            </div>
+            <div class="activity-content">
+                <h4 class="activity-title">Product updated</h4>
+                <p class="activity-desc">iPhone 15 Pro stock updated</p>
+                <span class="activity-time">15 minutes ago</span>
+            </div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon warning">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <div class="activity-content">
+                <h4 class="activity-title">Low stock alert</h4>
+                <p class="activity-desc">Samsung Galaxy S24 running low</p>
+                <span class="activity-time">1 hour ago</span>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate dashboard cards on load
+    const cards = document.querySelectorAll('.modern-dashboard-card');
+    cards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+    
+    // Add hover effects to shortcut cards
+    const shortcuts = document.querySelectorAll('.modern-shortcut-card');
+    shortcuts.forEach(shortcut => {
+        shortcut.addEventListener('mouseenter', function() {
+            this.querySelector('.shortcut-arrow').style.transform = 'translateX(5px)';
+        });
+        
+        shortcut.addEventListener('mouseleave', function() {
+            this.querySelector('.shortcut-arrow').style.transform = 'translateX(0)';
+        });
+    });
+    
+    // Action button interactions
+    const actionBtns = document.querySelectorAll('.action-btn');
+    actionBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+    });
+});
+</script>
 {% endblock %}

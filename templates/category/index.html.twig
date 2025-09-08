@@ -1,61 +1,123 @@
 {% extends 'base.html.twig' %}
 {% block title %}All Categories{% endblock %}
+{% block page_title %}Category Management{% endblock %}
 {% block body %}
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Category Management</h1>
-        <a href="{{ path('owner.category.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Add New
-        </a>
+<div class="modern-page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-info">
+                <h1 class="page-title">
+                    <i class="bi bi-tags me-2"></i>Category Management
+                </h1>
+                <p class="page-subtitle">Organize your products with categories</p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ path('owner.category.create') }}" class="modern-btn primary">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Category
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-4">Category Name</th>
-                            <th class="text-end pe-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for category in list %}
-                        <tr>
-                            <td class="ps-4">
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-light rounded-circle p-2 me-3">
-                                        <i class="bi bi-tag text-primary"></i>
-                                    </div>
-                                    <div>
-                                        <strong>{{ category.name }}</strong>
-                                        <div class="text-muted small mt-1">{{ category.description|slice(0, 50) }}{% if category.description|length > 50 %}...{% endif %}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="text-end pe-4">
-                                <div class="btn-group">
-                                    <a href="{{ path('owner.category.edit', {id: category.id}) }}" 
-                                       class="btn btn-sm btn-outline-warning">
-                                        <i class="bi bi-pencil-square"></i> Edit
-                                    </a>
-                                    <a href="{{ path('owner.category.delete', {id: category.id}) }}" 
-                                       class="btn btn-sm btn-outline-danger btn-delete">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="2" class="text-center py-5 text-muted">
-                                <i class="bi bi-exclamation-circle me-2"></i>No categories found
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <!-- Stats Cards -->
+    <div class="stats-grid mb-4">
+        <div class="stat-card">
+            <div class="stat-icon categories">
+                <i class="bi bi-tags"></i>
             </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ list|length }}</div>
+                <div class="stat-label">Total Categories</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon products">
+                <i class="bi bi-box"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">
+                    {% set totalProducts = 0 %}
+                    {% for category in list %}
+                        {% set totalProducts = totalProducts + category.products|length %}
+                    {% endfor %}
+                    {{ totalProducts }}
+                </div>
+                <div class="stat-label">Products Categorized</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Table -->
+    <div class="modern-table-card">
+        <div class="table-header">
+            <h3 class="table-title">Categories Overview</h3>
+            <div class="table-actions">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Search categories..." id="categorySearch">
+                </div>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Category</th>
+                        <th class="sortable">Products Count</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in list %}
+                    <tr class="table-row">
+                        <td>
+                            <div class="category-info">
+                                <div class="category-icon">
+                                    <i class="bi bi-tag"></i>
+                                </div>
+                                <div class="category-details">
+                                    <div class="category-name">{{ category.name }}</div>
+                                    <div class="category-description">
+                                        {{ category.description|slice(0, 80) }}{% if category.description|length > 80 %}...{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="product-count-badge">
+                                <i class="bi bi-box me-1"></i>{{ category.products|length }} products
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <div class="action-buttons">
+                                <a href="{{ path('owner.category.edit', {id: category.id}) }}" 
+                                   class="action-btn edit" title="Edit Category">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{{ path('owner.category.delete', {id: category.id}) }}" 
+                                   class="action-btn delete btn-delete" title="Delete Category">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="empty-state">
+                            <div class="empty-content">
+                                <i class="bi bi-tags"></i>
+                                <h4>No Categories Found</h4>
+                                <p>Start organizing your products by creating categories</p>
+                                <a href="{{ path('owner.category.create') }}" class="modern-btn primary">
+                                    <i class="bi bi-plus-circle me-2"></i>Add Category
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

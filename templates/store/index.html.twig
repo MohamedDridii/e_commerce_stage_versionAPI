@@ -1,39 +1,134 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}All Stores{% endblock %}
+{% block page_title %}Store Management{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="modern-page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-info">
+                <h1 class="page-title">
+                    <i class="bi bi-shop me-2"></i>Store Management
+                </h1>
+                <p class="page-subtitle">Manage your store locations and inventory</p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ path('owner.store.create') }}" class="modern-btn primary">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Store
+                </a>
+            </div>
+        </div>
+    </div>
 
-<div class="example-wrapper">
-    
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for store in list %}
-            <tr>
-                <td>
-                    <a>
-                        {{ store.name }}
-                    </a>
-                </td>
-                
-                <td>
-                    <a href="{{ path('owner.store.edit', {id: store.id}) }}" class="btn btn-warning">Edit</a><!-- la partie id sert a specifier l'id de recette pour path car elle genere un url vers une route nomme et dans le route dans le controlleur le champ id est obligatoire -->
-                    <a href="{{ path('owner.store.delete', {id: store.id}) }}" class="btn btn-danger btn-delete">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Stats Cards -->
+    <div class="stats-grid mb-4">
+        <div class="stat-card">
+            <div class="stat-icon stores">
+                <i class="bi bi-shop"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ list|length }}</div>
+                <div class="stat-label">Total Stores</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon stock">
+                <i class="bi bi-boxes"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">
+                    {% set totalProducts = 0 %}
+                    {% for store in list %}
+                        {% set totalProducts = totalProducts + store.stocks|length %}
+                    {% endfor %}
+                    {{ totalProducts }}
+                </div>
+                <div class="stat-label">Products Stocked</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stores Table -->
+    <div class="modern-table-card">
+        <div class="table-header">
+            <h3 class="table-title">Stores Overview</h3>
+            <div class="table-actions">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Search stores..." id="storeSearch">
+                </div>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Store</th>
+                        <th class="sortable">Location</th>
+                        <th class="sortable">Products</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for store in list %}
+                    <tr class="table-row">
+                        <td>
+                            <div class="store-info">
+                                <div class="store-icon">
+                                    <i class="bi bi-shop"></i>
+                                </div>
+                                <div class="store-details">
+                                    <div class="store-name">{{ store.name }}</div>
+                                    <div class="store-status">
+                                        <span class="status-badge active">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="location-info">
+                                <i class="bi bi-geo-alt me-1"></i>
+                                {{ store.location ?? 'Location not set' }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="product-count-badge">
+                                <i class="bi bi-box me-1"></i>{{ store.stocks|length }} products
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <div class="action-buttons">
+                                <a href="{{ path('owner.store.edit', {id: store.id}) }}" 
+                                   class="action-btn edit" title="Edit Store">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{{ path('owner.store.delete', {id: store.id}) }}" 
+                                   class="action-btn delete btn-delete" title="Delete Store">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <div class="empty-content">
+                                <i class="bi bi-shop"></i>
+                                <h4>No Stores Found</h4>
+                                <p>Create your first store location to start managing inventory</p>
+                                <a href="{{ path('owner.store.create') }}" class="modern-btn primary">
+                                    <i class="bi bi-plus-circle me-2"></i>Add Store
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {

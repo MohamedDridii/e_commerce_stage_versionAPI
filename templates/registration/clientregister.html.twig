@@ -1,160 +1,484 @@
 {% extends 'base_auth.html.twig' %}
 
-{% block title %}Client Registration{% endblock %}
+{% block title %}Create an account - Orbex{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    .auth-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 420px;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .back-link {
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        color: white;
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    
+    .back-link:hover {
+        opacity: 1;
+        color: white;
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .orbex-logo {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 1rem;
+        color: #667eea;
+    }
+    
+    .auth-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f7fafc;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-input::placeholder {
+        color: #a0aec0;
+    }
+    
+    .checkbox-group {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+    }
+    
+    .checkbox-input {
+        margin-top: 0.25rem;
+        accent-color: #667eea;
+    }
+    
+    .checkbox-label {
+        font-size: 0.875rem;
+        color: #4a5568;
+        line-height: 1.4;
+    }
+    
+    .checkbox-label a {
+        color: #667eea;
+        text-decoration: none;
+    }
+    
+    .checkbox-label a:hover {
+        text-decoration: underline;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.875rem 1rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+        color: #a0aec0;
+        font-size: 0.875rem;
+    }
+    
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e2e8f0;
+        z-index: 1;
+    }
+    
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .social-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .social-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        color: #4a5568;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .social-btn:hover {
+        border-color: #cbd5e0;
+        background: #f7fafc;
+        color: #2d3748;
+    }
+    
+    .auth-footer {
+        text-align: center;
+        font-size: 0.875rem;
+        color: #718096;
+    }
+    
+    .auth-footer a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Illustrations */
+    .illustration-left {
+        position: absolute;
+        left: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 200px;
+        height: 300px;
+        opacity: 0.8;
+        z-index: 1;
+    }
+    
+    .illustration-right {
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 200px;
+        height: 300px;
+        opacity: 0.8;
+        z-index: 1;
+    }
+    
+    .person {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .person-body {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 120px;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        border-radius: 40px 40px 20px 20px;
+    }
+    
+    .person-head {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 50px;
+        background: #fbbf24;
+        border-radius: 50%;
+    }
+    
+    .person-hair {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 30px;
+        background: #92400e;
+        border-radius: 30px 30px 0 0;
+    }
+    
+    .person-legs {
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 40px;
+        background: #1e40af;
+        border-radius: 0 0 20px 20px;
+    }
+    
+    .plant {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        width: 40px;
+        height: 60px;
+    }
+    
+    .plant-pot {
+        position: absolute;
+        bottom: 0;
+        width: 40px;
+        height: 20px;
+        background: #d97706;
+        border-radius: 0 0 20px 20px;
+    }
+    
+    .plant-leaf {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 8px;
+        height: 30px;
+        background: #10b981;
+        border-radius: 4px;
+    }
+    
+    .plant-leaf:nth-child(2) {
+        transform: translateX(-50%) rotate(-20deg);
+        left: 40%;
+    }
+    
+    .plant-leaf:nth-child(3) {
+        transform: translateX(-50%) rotate(20deg);
+        left: 60%;
+    }
+    
+    @media (max-width: 768px) {
+        .illustration-left,
+        .illustration-right {
+            display: none;
+        }
+        
+        .auth-card {
+            margin: 1rem;
+            padding: 2rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-<div class="w-100">
-    <div class="text-center mb-5">
-        <div class="logo-icon mx-auto mb-3">
-            <i class="bi bi-person-plus text-white fs-4"></i>
-        </div>
-        <h1 class="h4 fw-bold mb-3">Create Your Client Account</h1>
-        <p class="text-muted">Join our community and start shopping today</p>
-    </div>
+<div class="auth-container">
+    <a href="#" class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to homepage
+    </a>
     
-    <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
-        <div class="card-body p-4">
-            {{ form_start(registrationForm, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-                {{ form_errors(registrationForm) }}
-                
-                <div class="mb-3">
-                    {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-envelope"></i>
-                        </span>
-                        {{ form_widget(registrationForm.email, {
-                            'attr': {
-                                'class': 'form-control form-control-lg',
-                                'placeholder': 'your@email.com'
-                            }
-                        }) }}
-                    </div>
-                    <div class="invalid-feedback">
-                        Please enter a valid email address.
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    {{ form_label(registrationForm.password, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-lock"></i>
-                        </span>
-                        {{ form_widget(registrationForm.password, {
-                            'attr': {
-                                'class': 'form-control form-control-lg',
-                                'placeholder': '••••••••'
-                            }
-                        }) }}
-                        <button class="btn btn-outline-secondary toggle-password" type="button">
-                            <i class="bi bi-eye-slash"></i>
-                        </button>
-                    </div>
-                    <div class="invalid-feedback">
-                        Password must be at least 6 characters.
-                    </div>
-                </div>
-                
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        {{ form_label(registrationForm.name, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-person"></i>
-                            </span>
-                            {{ form_widget(registrationForm.name, {
-                                'attr': {
-                                    'class': 'form-control form-control-lg',
-                                    'placeholder': 'Full name'
-                                }
-                            }) }}
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        {{ form_label(registrationForm.phoneNumber, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-telephone"></i>
-                            </span>
-                            {{ form_widget(registrationForm.phoneNumber, {
-                                'attr': {
-                                    'class': 'form-control form-control-lg',
-                                    'placeholder': '+1 234 567 890'
-                                }
-                            }) }}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    {{ form_label(registrationForm.adress, null, {'label_attr': {'class': 'form-label fw-medium'}}) }}
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-house"></i>
-                        </span>
-                        {{ form_widget(registrationForm.adress, {
-                            'attr': {
-                                'class': 'form-control form-control-lg',
-                                'placeholder': 'Your full address'
-                            }
-                        }) }}
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <div class="form-check">
-                        {{ form_widget(registrationForm.agreeTerms, {
-                            'attr': {'class': 'form-check-input'}
-                        }) }}
-                        {{ form_label(registrationForm.agreeTerms, null, {
-                            'label_attr': {'class': 'form-check-label'}
-                        }) }}
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">
-                    <i class="bi bi-person-plus me-2"></i>Create Account
-                </button>
-            {{ form_end(registrationForm) }}
+    <!-- Left Illustration -->
+    <div class="illustration-left">
+        <div class="person">
+            <div class="person-hair"></div>
+            <div class="person-head"></div>
+            <div class="person-body"></div>
+            <div class="person-legs"></div>
+        </div>
+        <div class="plant">
+            <div class="plant-pot"></div>
+            <div class="plant-leaf"></div>
+            <div class="plant-leaf"></div>
+            <div class="plant-leaf"></div>
         </div>
     </div>
     
-    <div class="text-center mt-4">
-        <p class="text-muted mb-0">Already have an account?</p>
-        <a href="{{ path('app_login') }}" class="btn btn-link text-primary fw-medium">
-            <i class="bi bi-box-arrow-in-right me-1"></i>Sign in now
-        </a>
+    <!-- Right Illustration -->
+    <div class="illustration-right">
+        <div class="person">
+            <div class="person-hair" style="background: #7c2d12;"></div>
+            <div class="person-head"></div>
+            <div class="person-body" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);"></div>
+            <div class="person-legs"></div>
+        </div>
+    </div>
+    
+    <!-- Main Form Card -->
+    <div class="auth-card">
+        <div class="auth-header">
+            <svg class="orbex-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
+                <circle cx="16" cy="16" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.6"/>
+                <circle cx="16" cy="16" r="6" stroke="currentColor" stroke-width="2" fill="none"/>
+                <circle cx="16" cy="16" r="2" fill="currentColor"/>
+                <circle cx="26" cy="16" r="1.5" fill="currentColor">
+                    <animateTransform attributeName="transform" type="rotate" values="0 16 16;360 16 16" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="6" cy="16" r="1" fill="currentColor" opacity="0.7">
+                    <animateTransform attributeName="transform" type="rotate" values="0 16 16;-360 16 16" dur="6s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+            <h1 class="auth-title">Create an account</h1>
+        </div>
+        
+        {{ form_start(registrationForm) }}
+            <div class="form-group">
+                {{ form_label(registrationForm.email, 'Email Address', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-input', 'placeholder': 'name@company.com'}}) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(registrationForm.password, 'Password', {'label_attr': {'class': 'form-label'}}) }}
+                <div class="password-wrapper">
+                    {{ form_widget(registrationForm.password, {'attr': {'class': 'form-input', 'placeholder': 'Create a strong password'}}) }}
+                    <button class="password-toggle" type="button">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm-password" class="form-label">Confirm Password</label>
+                <div class="password-wrapper">
+                    <input 
+                        type="password" 
+                        id="confirm-password" 
+                        name="confirm_password" 
+                        class="form-input" 
+                        placeholder="Confirm your password" 
+                        required
+                    >
+                    <button class="password-toggle" type="button">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(registrationForm.name, 'Full Name', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.name, {'attr': {'class': 'form-input', 'placeholder': 'Enter your full name'}}) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(registrationForm.adress, 'Address', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.adress, {'attr': {'class': 'form-input', 'placeholder': 'Enter your address'}}) }}
+            </div>
+            
+            <div class="form-group">
+                {{ form_label(registrationForm.phoneNumber, 'Phone Number', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.phoneNumber, {'attr': {'class': 'form-input', 'placeholder': 'Enter your phone number'}}) }}
+            </div>
+            
+            <div class="checkbox-group">
+                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'checkbox-input'}}) }}
+                {{ form_label(registrationForm.agreeTerms, 'I agree to the Terms of Service and Privacy Policy', {'label_attr': {'class': 'checkbox-label'}}) }}
+            </div>
+            
+            <button type="submit" class="submit-btn">
+                <span class="btn-text">Create Account</span>
+                <div class="btn-loader">
+                    <div class="spinner"></div>
+                </div>
+            </button>
+        {{ form_end(registrationForm) }}
+        
+        <div class="divider">
+            <span>or</span>
+        </div>
+        
+        <div class="social-buttons">
+            <button class="social-btn">
+                <i class="bi bi-facebook" style="color: #1877f2;"></i>
+                Facebook
+            </button>
+            <button class="social-btn">
+                <i class="bi bi-twitter" style="color: #1da1f2;"></i>
+                Twitter
+            </button>
+            <button class="social-btn">
+                <i class="bi bi-github" style="color: #333;"></i>
+                GitHub
+            </button>
+        </div>
+        
+        <div class="auth-footer">
+            Already have an account? <a href="{{ path('app_login') }}">Login here</a>
+        </div>
     </div>
 </div>
-
-<script>
-    // Toggle password visibility
-    document.querySelector('.toggle-password').addEventListener('click', function() {
-        const passwordInput = document.getElementById('{{ registrationForm.password.vars.id }}');
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
-        const icon = this.querySelector('i');
-        icon.classList.toggle('bi-eye');
-        icon.classList.toggle('bi-eye-slash');
-    });
-
-    // Form validation
-    document.addEventListener('DOMContentLoaded', function() {
-        const forms = document.querySelectorAll('.needs-validation');
-        
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                
-                form.classList.add('was-validated');
-            }, false);
-        });
-    });
-</script>
 {% endblock %}

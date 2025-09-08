@@ -1,40 +1,55 @@
 {% extends 'base.html.twig' %}
 {% block title %}Create Category{% endblock %}
+{% block page_title %}Create Category{% endblock %}
 {% block body %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white py-3">
-                    <h1 class="h4 mb-0 text-center">Create New Category</h1>
-                </div>
-                <div class="card-body p-4">
-                    {{ form_start(form) }}
-                        <div class="mb-3">
-                            {{ form_label(form.name, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.name, {'attr': {'class': 'form-control form-control-lg'}}) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.slug, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.slug, {'attr': {'class': 'form-control'}}) }}
-                            <div class="form-text">URL-friendly version of the name</div>
-                        </div>
-                        <div class="mb-4">
-                            {{ form_label(form.description, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg w-100 py-2">
-                            <i class="bi bi-plus-circle me-2"></i>Create Category
-                        </button>
-                    {{ form_end(form) }}
+<div class="content-area">
+    <div class="modern-form">
+        <div class="form-header">
+            <h2><i class="bi bi-tags"></i> Create New Category</h2>
+            <p>Organize your products by creating a new category</p>
+        </div>
+
+        {{ form_start(form) }}
+        
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-info-circle"></i>
+                Category Information
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name) }}
                 </div>
             </div>
-            <div class="mt-4 text-center">
-                <a href="{{ path('owner.category.home') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Categories
-                </a>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.slug) }}
+                    {{ form_widget(form.slug) }}
+                    <small style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.25rem;">URL-friendly version of the name</small>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                </div>
             </div>
         </div>
+
+        <div class="form-actions">
+            <a href="{{ path('owner.category.home') }}" class="btn-secondary">
+                <i class="bi bi-arrow-left"></i>Cancel
+            </a>
+            <button type="submit" class="btn-primary">
+                <i class="bi bi-plus-circle"></i>Create Category
+            </button>
+        </div>
+        
+        {{ form_end(form) }}
     </div>
 </div>
 {% endblock %}

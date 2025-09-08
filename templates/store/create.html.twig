@@ -1,19 +1,44 @@
-{% extends 'base.html.twig'%}
-{% block title%}Create{% endblock %}
+{% extends 'base.html.twig' %}
+{% block title %}Create Store{% endblock %}
+{% block page_title %}Create Store{% endblock %}
 {% block body %}
-    <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    </style>
-     <div class="row">
-        <div class="col-6 mx-auto" >
-            <h1 class="display-4 my-5 text-center">Title </h1>
-            {{form_start(form)}}            
-                {{form_widget(form)}}            
-                <button type="submit" class="btn btn-primary w-100" > Add Store  </button> 
-            {{form_end(form)}} <br>
-            <a href="{{ path('owner.store.home') }}" class="btn btn-secondary w-100 ">← Go back to Stores home page </a>
-
+<div class="content-area">
+    <div class="modern-form">
+        <div class="form-header">
+            <h2><i class="bi bi-shop"></i> Create New Store</h2>
+            <p>Set up a new store location for your business</p>
         </div>
-   </div>
+
+        {{ form_start(form) }}
+        
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-info-circle"></i>
+                Store Information
+            </div>
+            
+            <div class="form-row">
+                {% for field in form %}
+                    {% if field.vars.name != '_token' %}
+                    <div class="form-group">
+                        {{ form_label(field) }}
+                        {{ form_widget(field) }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ path('owner.store.home') }}" class="btn-secondary">
+                <i class="bi bi-arrow-left"></i>Cancel
+            </a>
+            <button type="submit" class="btn-primary">
+                <i class="bi bi-plus-circle"></i>Create Store
+            </button>
+        </div>
+        
+        {{ form_end(form) }}
+    </div>
+</div>
 {% endblock %}

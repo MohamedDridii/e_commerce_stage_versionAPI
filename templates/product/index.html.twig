@@ -1,86 +1,157 @@
 {% extends 'base.html.twig' %}
 {% block title %}All Products{% endblock %}
+{% block page_title %}Product Management{% endblock %}
 {% block body %}
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Product Inventory</h1>
-        <a href="{{ path('owner.product.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Add New Product
-        </a>
+<div class="modern-page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-info">
+                <h1 class="page-title">
+                    <i class="bi bi-box-seam me-2"></i>Product Inventory
+                </h1>
+                <p class="page-subtitle">Manage your product catalog and inventory</p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ path('owner.product.create') }}" class="modern-btn primary">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Product
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-4">Product</th>
-                            <th>Price</th>
-                            <th>Total Stock</th>
-                            <th>Stores</th>
-                            <th class="text-end pe-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in productsWithData %}
-                        <tr>
-                            <td class="ps-4">
-                                <div class="d-flex align-items-center">
+    <!-- Stats Cards -->
+    <div class="stats-grid mb-4">
+        <div class="stat-card">
+            <div class="stat-icon products">
+                <i class="bi bi-box"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">{{ productsWithData|length }}</div>
+                <div class="stat-label">Total Products</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon stock">
+                <i class="bi bi-stack"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">
+                    {% set totalStock = 0 %}
+                    {% for item in productsWithData %}
+                        {% set totalStock = totalStock + item.totalStock %}
+                    {% endfor %}
+                    {{ totalStock }}
+                </div>
+                <div class="stat-label">Total Stock</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon stores">
+                <i class="bi bi-shop"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value">
+                    {% set totalStores = 0 %}
+                    {% for item in productsWithData %}
+                        {% set totalStores = totalStores + item.storeCount %}
+                    {% endfor %}
+                    {{ totalStores }}
+                </div>
+                <div class="stat-label">Store Locations</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="modern-table-card">
+        <div class="table-header">
+            <h3 class="table-title">Products Overview</h3>
+            <div class="table-actions">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Search products..." id="productSearch">
+                </div>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th class="sortable">Product</th>
+                        <th class="sortable">Price</th>
+                        <th class="sortable">Stock Status</th>
+                        <th>Stores</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in productsWithData %}
+                    <tr class="table-row">
+                        <td>
+                            <div class="product-info">
+                                <div class="product-image">
                                     {% if item.product.image %}
-                                    <img src="{{ item.product.image }}" 
-                                         class="rounded me-3" 
-                                         style="width: 60px; height: 60px; object-fit: cover" 
-                                         alt="{{ item.product.name }}">
+                                    <img src="{{ item.product.image }}" alt="{{ item.product.name }}">
                                     {% else %}
-                                    <div class="bg-light rounded p-2 me-3">
-                                        <i class="bi bi-image text-muted" style="font-size: 1.5rem"></i>
+                                    <div class="image-placeholder">
+                                        <i class="bi bi-image"></i>
                                     </div>
                                     {% endif %}
-                                    <div>
-                                        <strong>{{ item.product.name }}</strong>
-                                        <div class="text-muted small mt-1">
-                                            {{ item.product.category.name }}
-                                        </div>
-                                    </div>
                                 </div>
-                            </td>
-                            <td>{{ item.product.price }} TND</td>
-                            <td>
-                                <span class="badge bg-{{ item.totalStock > 20 ? 'success' : (item.totalStock > 5 ? 'warning' : 'danger') }} fs-6">
-                                    {{ item.totalStock }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge bg-primary">{{ item.storeCount }} store(s)</span>
-                            </td>
-                            <td class="text-end pe-4">
-                                <div class="btn-group">
-                                    <a href="{{ path('owner.product.show', {id: item.product.id}) }}" 
-                                       class="btn btn-sm btn-outline-info">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="{{ path('owner.product.edit', {id: item.product.id}) }}" 
-                                       class="btn btn-sm btn-outline-warning">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="{{ path('owner.product.delete', {id: item.product.id}) }}" 
-                                       class="btn btn-sm btn-outline-danger btn-delete">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
+                                <div class="product-details">
+                                    <div class="product-name">{{ item.product.name }}</div>
+                                    <div class="product-category">{{ item.product.category.name }}</div>
                                 </div>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="bi bi-exclamation-circle me-2"></i>No products found
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="price-display">{{ item.product.price }} TND</div>
+                        </td>
+                        <td>
+                            <div class="stock-badge {{ item.totalStock > 20 ? 'high' : (item.totalStock > 5 ? 'medium' : 'low') }}">
+                                <span class="stock-value">{{ item.totalStock }}</span>
+                                <span class="stock-label">units</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="store-badge">
+                                <i class="bi bi-shop me-1"></i>{{ item.storeCount }} store(s)
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <div class="action-buttons">
+                                <a href="{{ path('owner.product.show', {id: item.product.id}) }}" 
+                                   class="action-btn view" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{{ path('owner.product.edit', {id: item.product.id}) }}" 
+                                   class="action-btn edit" title="Edit Product">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{{ path('owner.product.delete', {id: item.product.id}) }}" 
+                                   class="action-btn delete btn-delete" title="Delete Product">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <div class="empty-content">
+                                <i class="bi bi-box-seam"></i>
+                                <h4>No Products Found</h4>
+                                <p>Start by adding your first product to the inventory</p>
+                                <a href="{{ path('owner.product.create') }}" class="modern-btn primary">
+                                    <i class="bi bi-plus-circle me-2"></i>Add Product
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
