@@ -58,19 +58,33 @@
         /* Modern Auth Container */
         .modern-auth-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
+            min-height: 500px;
+            aspect-ratio: 1 / 1;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             border-radius: 24px;
-            padding: 3rem 2.5rem;
+            padding: 2.5rem 2rem;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+        
+        .modern-auth-container form {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         /* Auth Header */
         .auth-header {
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
         }
         
         .brand-logo {
@@ -78,7 +92,7 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
         
         .logo-circle {
@@ -647,7 +661,10 @@
         /* Responsive Design */
         @media (max-width: 640px) {
             .modern-auth-container {
-                padding: 2rem 1.5rem;
+                max-width: 90vw;
+                min-height: 90vw;
+                aspect-ratio: 1 / 1;
+                padding: 1.5rem 1rem;
                 margin: 0.5rem;
             }
             
@@ -885,7 +902,31 @@
             }
             
             .modern-auth-container {
-                 max-width: 100%;
+                max-width: 95vw;
+                min-height: 95vw;
+                aspect-ratio: 1 / 1;
+                padding: 1.5rem 1rem;
+            }
+            
+            .auth-header {
+                margin-bottom: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .modern-auth-container {
+                max-width: 96vw;
+                min-height: 96vw;
+                padding: 1.25rem 0.75rem;
+                border-radius: 16px;
+            }
+            
+            .auth-header {
+                margin-bottom: 0.75rem;
+            }
+            
+            .brand-name {
+                font-size: 1.25rem;
             }
         }
         

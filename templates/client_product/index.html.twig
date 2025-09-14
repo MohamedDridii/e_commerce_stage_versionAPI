@@ -1,86 +1,264 @@
 {% extends 'base_client.html.twig' %}
 
-{% block title %}Products | E-Commerce{% endblock %}
+{% block title %}Products | Orbex Store{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h2 class="mb-4 page-title">All Products</h2>
-    <!-- Search Bar -->
-    <form method="post" class="mb-4">
-        <div class="input-group">
-            <input type="text" class="form-control" name="searchQuery" placeholder="Search products..." value="{{ search }}">
-            <button class="btn btn-primary" type="submit">Search</button>
+<div class="fade-in">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 fw-bold text-dark mb-2">Discover Products</h1>
+            <p class="text-muted mb-0">Find the perfect products for your needs</p>
         </div>
-    </form>
-    <!-- Filters -->
-    <div class="mb-4">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title mb-3">
-                    <i class="bi bi-funnel me-2"></i>Filters
-                </h5>
-                <form method="post" class="d-flex flex-wrap gap-2"><!-- i we dont use form and we use <a> balise here we will neevr be able to specify the method post here -->
-                    <select name="category" class="form-select w-auto d-inline-block">
-                        <option value="">All Categories</option>
-                        {% for category in categories %}
-                            <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
-                                {{ category.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                    <select name="store" class="form-select w-auto d-inline-block">
-                        <option value="">All Stores</option>
-                        {% for store in stores %}
-                            <option value="{{ store.id }}" {% if selectedStore == store.id %}selected{% endif %}>
-                                {{ store.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                    <select name="min_stock" class="form-select w-auto d-inline-block">
-                        <option value="">Minimum Stock</option>
-                        <option value="1" {% if selectedMinStock == 1 %}selected{% endif %}>1+</option>
-                        <option value="5" {% if selectedMinStock == 5 %}selected{% endif %}>5+</option>
-                        <option value="10" {% if selectedMinStock == 10 %}selected{% endif %}>10+</option>
-                    </select>
-                    <button type="submit" class="btn btn-primary">Filter</button>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary rounded-pill px-3 py-2">
+                {{ products|length }} Products Found
+            </span>
+        </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalLabel">
+                        <i class="bi bi-funnel me-2"></i>Filter Products
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post">
+                    <div class="modal-body">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-tags me-2 text-primary"></i>Category
+                                </label>
+                                <select name="category" class="form-select">
+                                    <option value="">All Categories</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
+                                            {{ category.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-shop me-2 text-primary"></i>Store
+                                </label>
+                                <select name="store" class="form-select">
+                                    <option value="">All Stores</option>
+                                    {% for store in stores %}
+                                        <option value="{{ store.id }}" {% if selectedStore == store.id %}selected{% endif %}>
+                                            {{ store.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-boxes me-2 text-primary"></i>Stock Level
+                                </label>
+                                <select name="min_stock" class="form-select">
+                                    <option value="">Any Stock Level</option>
+                                    <option value="1" {% if selectedMinStock == 1 %}selected{% endif %}>In Stock (1+)</option>
+                                    <option value="5" {% if selectedMinStock == 5 %}selected{% endif %}>Good Stock (5+)</option>
+                                    <option value="10" {% if selectedMinStock == 10 %}selected{% endif %}>High Stock (10+)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Active Filters Display -->
+                        {% if selectedCategory or selectedStore or selectedMinStock %}
+                            <div class="mt-4">
+                                <h6 class="fw-semibold mb-3">Active Filters:</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% if selectedCategory %}
+                                        {% for category in categories %}
+                                            {% if category.id == selectedCategory %}
+                                                <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
+                                                    Category: {{ category.name }}
+                                                </span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if selectedStore %}
+                                        {% for store in stores %}
+                                            {% if store.id == selectedStore %}
+                                                <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                                                    Store: {{ store.name }}
+                                                </span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if selectedMinStock %}
+                                        <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2">
+                                            Stock: {{ selectedMinStock }}+
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="{{ path('client.product.home') }}" class="btn btn-outline-danger">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Reset All
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check2 me-2"></i>Apply Filters
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
     
     <!-- Product Grid -->
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for product in products %}
-            <div class="col">
-                <div class="card feature-card h-100">
-                    {% if product.image %}
-                        <img src="{{  product.image }}" class="card-img-top" alt="{{ product.name }}">
-                    {% else %}
-                        <img src="https://via.placeholder.com/300x200?text=Product+Image" class="card-img-top" alt="Placeholder">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">{{ product.description|slice(0, 100) ~ '...' }}</p>
-                    </div>
-                    <div class="card-footer bg-white border-top-0">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-primary fw-bold">{{ product.price }} TND</span>
-                            <a href="{{ path('client.product.show', {id: product.id}) }}" class="btn btn-outline-primary">
-                                Details <i class="bi bi-arrow-right ms-1"></i>
-                            </a>
+    {% if products|length > 0 %}
+        <div class="row g-4">
+            {% for product in products %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card border-0 shadow-sm h-100">
+                        <div class="position-relative overflow-hidden">
+                            {% if product.image %}
+                                <img src="{{ product.image }}" class="product-image" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                                    <div class="text-center">
+                                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                        <p class="text-muted mt-2 mb-0">No Image</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="position-absolute top-0 end-0 p-3">
+                                <button class="btn btn-light btn-sm rounded-circle" data-bs-toggle="tooltip" title="Add to Wishlist">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <h5 class="card-title fw-bold mb-2 text-truncate">{{ product.name }}</h5>
+                                <p class="card-text text-muted small mb-3" style="height: 3rem; overflow: hidden;">
+                                    {{ product.description|length > 80 ? product.description|slice(0, 80) ~ '...' : product.description }}
+                                </p>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="h5 text-primary fw-bold mb-0">{{ product.price }} TND</span>
+                                    {% if product.category %}
+                                        <div class="small text-muted mt-1">{{ product.category.name }}</div>
+                                    {% endif %}
+                                </div>
+                                <a href="{{ path('client.product.show', {id: product.id}) }}" 
+                                   class="btn btn-primary btn-sm px-4">
+                                    View Details
+                                    <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                            <div class="d-grid">
+                                <form action="{{ path('client.bucket.add', {'id': product.id}) }}" method="post" class="d-inline">
+                                    <input type="hidden" name="quantite" value="1">
+                                    <button type="submit" class="btn btn-outline-primary btn-add-to-cart w-100">
+                                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        {% else %}
-            <div class="col-12">
-                <div class="alert alert-warning text-center py-5">
-                    <i class="bi bi-exclamation-circle fs-1 mb-3"></i>
-                    <h3>No products available</h3>
-                    <p class="mb-0">Please check back later for new products</p>
+            {% endfor %}
+        </div>
+        
+        <!-- Load More / Pagination -->
+        <div class="text-center mt-5">
+            <button class="btn btn-outline-primary btn-lg px-5">
+                <i class="bi bi-arrow-down-circle me-2"></i>Load More Products
+            </button>
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-search text-muted" style="font-size: 4rem;"></i>
+                    </div>
+                    <h3 class="h4 fw-bold text-dark mb-3">No Products Found</h3>
+                    <p class="text-muted mb-4">We couldn't find any products matching your criteria. Try adjusting your filters or search terms.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ path('client.product.home') }}" class="btn btn-primary">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Reset Filters
+                        </a>
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="bi bi-tags me-2"></i>Browse Categories
+                        </a>
+                    </div>
                 </div>
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    {% endif %}
 </div>
+
+<style>
+    .product-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    }
+    
+    .product-image {
+        transition: transform 0.3s ease;
+    }
+    
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+    
+    .input-group-text {
+        border-color: var(--border-color);
+        background: var(--bg-secondary);
+    }
+    
+    .form-control {
+        border-color: var(--border-color);
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .modal-content {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .modal-header {
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+        border-radius: 16px 16px 0 0;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+        border-radius: 0 0 16px 16px;
+    }
+    
+    .badge {
+        font-weight: 500;
+    }
+</style>
 {% endblock %}

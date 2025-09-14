@@ -1,84 +1,284 @@
 {% extends 'base_client.html.twig' %}
 
-{% block title %}{{ product.name }} | E-Commerce{% endblock %}
+{% block title %}{{ product.name }} | Orbex Store{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1 class="page-title">{{ product.name }}</h1>
-    
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-4 border-0 shadow-sm">
+<div class="fade-in">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('client.product.home') }}" class="text-decoration-none">
+                    <i class="bi bi-house me-1"></i>Home
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ path('client.product.home') }}" class="text-decoration-none">Products</a>
+            </li>
+            {% if product.category %}
+            <li class="breadcrumb-item">
+                <a href="#" class="text-decoration-none">{{ product.category.name }}</a>
+            </li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <!-- Product Image Section -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
                 <div class="card-body p-0">
-                    <img src="{{ product.image }}" class="img-fluid rounded" alt="{{ product.name }}">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Product Details</h5>
-                    <p class="card-text">{{ product.description }}</p>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Price:</strong>
-                            <span class="text-primary fw-bold">{{ product.price }} TND</span>
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Category:</strong> {{ product.category.name }}
-                        </li>
-                    </ul>
-                    
-                    <!-- Add to cart form -->
-                    <form action="{{ path('client.bucket.add', {'id': product.id}) }}" method="post" class="mt-4">
-                        <div class="row align-items-center">
-                            <div class="col-md-6 mb-3 mb-md-0">
-                                <label for="quantity" class="form-label"><strong>Quantity:</strong></label>
-                                <input type="number" 
-                                       id="quantity" 
-                                       name="quantite" 
-                                       class="form-control" 
-                                       value="1" 
-                                       min="1"
-                                       max="20"
-                                       required>
+                    <div class="position-relative">
+                        {% if product.image %}
+                            <img src="{{ product.image }}" 
+                                 class="img-fluid w-100 rounded" 
+                                 alt="{{ product.name }}"
+                                 style="height: 500px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 500px;">
+                                <div class="text-center">
+                                    <i class="bi bi-image text-muted" style="font-size: 4rem;"></i>
+                                    <p class="text-muted mt-3 mb-0">No Image Available</p>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary w-100 py-2 btn-add-to-cart">
-                                    <i class="bi bi-cart-plus me-2"></i>Add to Bucket
-                                </button>
-                            </div>
+                        {% endif %}
+                        
+                        <!-- Wishlist Button -->
+                        <div class="position-absolute top-0 end-0 p-3">
+                            <button class="btn btn-light rounded-circle shadow-sm" data-bs-toggle="tooltip" title="Add to Wishlist">
+                                <i class="bi bi-heart"></i>
+                            </button>
                         </div>
-                    </form>
+                        
+                        <!-- Share Button -->
+                        <div class="position-absolute top-0 start-0 p-3">
+                            <button class="btn btn-light rounded-circle shadow-sm" data-bs-toggle="tooltip" title="Share Product">
+                                <i class="bi bi-share"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="col-md-6">
+        <!-- Product Details Section -->
+        <div class="col-lg-6">
+            <div class="h-100">
+                <!-- Product Header -->
+                <div class="mb-4">
+                    {% if product.category %}
+                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 mb-3">
+                            {{ product.category.name }}
+                        </span>
+                    {% endif %}
+                    <h1 class="h2 fw-bold text-dark mb-3">{{ product.name }}</h1>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="h3 text-primary fw-bold mb-0">{{ product.price }} TND</span>
+                        <div class="d-flex align-items-center">
+                            <div class="text-warning me-2">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star"></i>
+                            </div>
+                            <small class="text-muted">(4.2) • 128 reviews</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Description -->
+                <div class="mb-4">
+                    <h5 class="fw-semibold mb-3">Description</h5>
+                    <p class="text-muted lh-lg">{{ product.description }}</p>
+                </div>
+
+                <!-- Product Features -->
+                <div class="mb-4">
+                    <h5 class="fw-semibold mb-3">Key Features</h5>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>High Quality</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>Fast Delivery</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>Warranty Included</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>24/7 Support</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add to Cart Section -->
+                <div class="card border-0 bg-light">
+                    <div class="card-body p-4">
+                        <form action="{{ path('client.bucket.add', {'id': product.id}) }}" method="post">
+                            <div class="row align-items-end g-3">
+                                <div class="col-md-4">
+                                    <label for="quantity" class="form-label fw-semibold">Quantity</label>
+                                    <div class="input-group">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="decreaseQuantity()">
+                                            <i class="bi bi-dash"></i>
+                                        </button>
+                                        <input type="number" 
+                                               id="quantity" 
+                                               name="quantite" 
+                                               class="form-control text-center" 
+                                               value="1" 
+                                               min="1"
+                                               max="20"
+                                               required>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="increaseQuantity()">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary btn-lg btn-add-to-cart">
+                                            <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div class="row mt-3 g-2">
+                            <div class="col-6">
+                                <button class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-heart me-2"></i>Wishlist
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-outline-secondary w-100">
+                                    <i class="bi bi-arrow-left-right me-2"></i>Compare
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Info -->
+                <div class="mt-4">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="bi bi-truck text-primary"></i>
+                                </div>
+                                <div>
+                                    <small class="fw-semibold d-block">Free Delivery</small>
+                                    <small class="text-muted">Orders over 100 TND</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="bi bi-shield-check text-success"></i>
+                                </div>
+                                <div>
+                                    <small class="fw-semibold d-block">Secure Payment</small>
+                                    <small class="text-muted">100% Protected</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="bi bi-arrow-clockwise text-warning"></i>
+                                </div>
+                                <div>
+                                    <small class="fw-semibold d-block">Easy Returns</small>
+                                    <small class="text-muted">30 Day Policy</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Store Availability Section -->
+    <div class="row mt-5">
+        <div class="col-12">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Stock in Stores</h5>
+                <div class="card-header bg-white border-0 py-4">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                            <i class="bi bi-geo-alt text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1 fw-semibold">Store Availability</h5>
+                            <p class="text-muted mb-0">Check product availability in nearby stores</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     {% if stores|length > 0 %}
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>Store</th>
-                                        <th>Address</th>
-                                        <th>Status</th>
+                                        <th class="border-0 fw-semibold">Store Name</th>
+                                        <th class="border-0 fw-semibold">Address</th>
+                                        <th class="border-0 fw-semibold">Stock Status</th>
+                                        <th class="border-0 fw-semibold">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for stock in stores %}
                                     <tr>
-                                        <td>{{ stock.name }}</td>
-                                        <td>{{ stock.adress }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-light rounded-circle p-2 me-3">
+                                                    <i class="bi bi-shop text-muted"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-semibold">{{ stock.name }}</div>
+                                                    <small class="text-muted">{{ stock.adress }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="text-muted">{{ stock.adress }}</div>
+                                        </td>
                                         <td>
                                             {% if stock.quantity < 5 %}
-                                                <span class="badge bg-danger">Low Stock</span>
+                                                <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2">
+                                                    <i class="bi bi-exclamation-triangle me-1"></i>Low Stock ({{ stock.quantity }})
+                                                </span>
                                             {% elseif stock.quantity < 15 %}
-                                                <span class="badge bg-warning">Medium Stock</span>
+                                                <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2">
+                                                    <i class="bi bi-dash-circle me-1"></i>Medium Stock ({{ stock.quantity }})
+                                                </span>
                                             {% else %}
-                                                <span class="badge bg-success">Good Stock</span>
+                                                <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                                                    <i class="bi bi-check-circle me-1"></i>In Stock ({{ stock.quantity }})
+                                                </span>
                                             {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-geo-alt me-1"></i>Get Directions
+                                            </button>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -86,20 +286,92 @@
                             </table>
                         </div>
                     {% else %}
-                        <div class="alert alert-warning text-center">No stock information available</div>
+                        <div class="text-center py-4">
+                            <i class="bi bi-info-circle text-muted mb-3" style="font-size: 2rem;"></i>
+                            <h6 class="text-muted">No store information available</h6>
+                            <p class="text-muted small mb-0">Contact customer service for more details</p>
+                        </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="d-flex justify-content-between mt-4">
+    <!-- Navigation Buttons -->
+    <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top">
         <a href="{{ path('client.product.home') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Back to Products
+            <i class="bi bi-arrow-left me-2"></i>Back to Products
         </a>
-        <a href="{{ path('client.bucket.home') }}" class="btn btn-outline-primary">
-            <i class="bi bi-cart me-1"></i>View Bucket
-        </a>
+        <div class="d-flex gap-3">
+            <a href="{{ path('client.bucket.home') }}" class="btn btn-outline-primary">
+                <i class="bi bi-cart me-2"></i>View Cart
+            </a>
+            <button class="btn btn-primary" onclick="scrollToTop()">
+                <i class="bi bi-arrow-up me-2"></i>Back to Top
+            </button>
+        </div>
     </div>
 </div>
+
+<script>
+    function increaseQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        if (currentValue < parseInt(input.max)) {
+            input.value = currentValue + 1;
+        }
+    }
+    
+    function decreaseQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        if (currentValue > parseInt(input.min)) {
+            input.value = currentValue - 1;
+        }
+    }
+    
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+    
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+
+<style>
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "›";
+        color: #6b7280;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: var(--primary-color);
+    }
+    
+    .input-group .btn {
+        border-color: #e2e8f0;
+    }
+    
+    .input-group .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: none;
+    }
+    
+    .table th {
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+    
+    .badge {
+        font-weight: 500;
+    }
+</style>
 {% endblock %}

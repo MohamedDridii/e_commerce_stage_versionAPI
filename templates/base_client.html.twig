@@ -3,289 +3,1159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}E-Commerce{% endblock %}</title>
+    <title>{% block title %}Orbex Store{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --success-color: #198754;
-            --danger-color: #dc3545;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
+            --primary-color: #2563eb;
+            --secondary-color: #7c3aed;
+            --accent-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-color: #ffffff;
+            --dark-color: #1e293b;
+            --sidebar-width: 280px;
+            --navbar-height: 70px;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+        }
+        
+        [data-theme="dark"] {
+            --light-color: #1e293b;
+            --dark-color: #ffffff;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-        }
-        
-        .navbar {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            background-color: #ffffff;
-            padding: 15px 0;
-        }
-        
-        .bucket-icon {
-            position: relative;
-            font-size: 1.5rem;
-            color: var(--dark-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            color: var(--text-primary);
             transition: all 0.3s ease;
         }
         
-        .bucket-icon:hover {
-            color: var(--primary-color);
-            transform: scale(1.1);
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--light-color);
+            border-right: 1px solid var(--border-color);
+            z-index: 1050;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
         }
         
-        .bucket-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            font-size: 0.7rem;
-            padding: 3px 7px;
-            border-radius: 50%;
-            background-color: var(--danger-color);
-            color: white;
-            font-weight: bold;
+        .sidebar.show {
+            left: 0;
         }
         
-        .hero-section {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: white;
-            padding: 100px 0;
-            margin-bottom: 50px;
-        }
-        
-        .feature-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 10px;
-            overflow: hidden;
-            height: 100%;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-        .footer {
-            background-color: #f8f9fa;
-            padding: 60px 0 30px;
-            margin-top: 50px;
-            border-top: 1px solid #e9ecef;
-        }
-        
-        .product-image {
-            height: 200px;
-            object-fit: cover;
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
         
-        .card-img-top {
-            height: 200px;
-            object-fit: cover;
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
         
-        .page-title {
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar-brand:hover {
+            color: white;
+        }
+        
+        .orbital-logo {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            margin-right: 12px;
             position: relative;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
+            animation: orbit 10s linear infinite;
         }
         
-        .page-title::after {
+        .orbital-logo::before {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 70px;
-            height: 3px;
-            background-color: var(--primary-color);
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
         }
         
-        .btn-add-to-cart {
-            transition: all 0.3s ease;
+        @keyframes orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
-        .btn-add-to-cart:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+        
+        .nav-section-title {
+            padding: 0 1.5rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
         }
         
         .nav-link {
-            font-weight: 500;
-            position: relative;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--primary-color);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 100%;
-        }
-        
-        .footer-links li {
-            margin-bottom: 10px;
-        }
-        
-        .footer-links a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-primary);
             text-decoration: none;
-            color: var(--secondary-color);
-            transition: color 0.3s ease;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
         }
         
-        .footer-links a:hover {
+        .nav-link:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.1), transparent);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+        
+        .nav-link i {
+            width: 20px;
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+        
+        /* Top Navigation */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--navbar-height);
+            background: var(--light-color);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1030;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            margin-right: 1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar-toggle:hover {
+            background: rgba(37, 99, 235, 0.1);
             color: var(--primary-color);
         }
         
-        .social-icons a {
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .navbar-brand:hover {
+            color: var(--primary-color);
+        }
+        
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .dark-mode-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .cart-icon {
+            position: relative;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .cart-icon:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--danger-color);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-top: var(--navbar-height);
+            min-height: calc(100vh - var(--navbar-height));
+            background: var(--bg-primary);
+            padding: 2rem;
+        }
+        
+        /* Cards and Components */
+        .card {
+            border: none;
+            border-radius: 16px;
+            background: var(--light-color);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8, #6d28d9);
+            transform: translateY(-1px);
+            color: white;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            transition: all 0.2s ease;
+            background: var(--light-color);
+            color: var(--text-primary);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: var(--light-color);
+            color: var(--text-primary);
+        }
+        
+        .form-select {
+            background: var(--light-color);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* Product Grid */
+        .product-card {
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .product-image {
+            height: 250px;
+            object-fit: cover;
+            width: 100%;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .top-navbar {
+                padding: 0 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .navbar-brand span {
+                display: none;
+            }
+        }
+        
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        
+        /* Dark mode specific styles */
+        [data-theme="dark"] .dropdown-menu {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        [data-theme="dark"] .dropdown-item {
+            color: var(--text-primary);
+        }
+        
+        [data-theme="dark"] .dropdown-item:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+        }
+        
+        [data-theme="dark"] .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        [data-theme="dark"] .modal-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        [data-theme="dark"] .modal-title {
+            color: var(--text-primary);
+        }
+        
+        [data-theme="dark"] .modal-body {
+            color: var(--text-secondary);
+        }
+        
+        [data-theme="dark"] .modal-footer {
+            border-top: 1px solid var(--border-color);
+        }
+        
+        [data-theme="dark"] .btn-primary {
+            background: linear-gradient(135deg, #1d4ed8, #6d28d9);
+            border: none;
+            color: white;
+        }
+        
+        [data-theme="dark"] .btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8, #6d28d9);
+            transform: translateY(-1px);
+            color: white;
+        }
+        
+        /* Dark mode text fixes */
+        [data-theme="dark"] * {
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .text-primary {
+            color: var(--primary-color) !important;
+        }
+        
+        [data-theme="dark"] .text-secondary {
+            color: var(--text-secondary) !important;
+        }
+        
+        [data-theme="dark"] .text-success {
+            color: #10b981 !important;
+        }
+        
+        [data-theme="dark"] .text-warning {
+            color: #f59e0b !important;
+        }
+        
+        [data-theme="dark"] .text-danger {
+            color: #ef4444 !important;
+        }
+        
+        [data-theme="dark"] .text-info {
+            color: var(--accent-color) !important;
+        }
+        
+        [data-theme="dark"] .fw-bold,
+        [data-theme="dark"] .fw-semibold,
+        [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, 
+        [data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .card-title,
+        [data-theme="dark"] .modal-title {
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .breadcrumb-item a {
+            color: var(--text-secondary) !important;
+        }
+        
+        [data-theme="dark"] .breadcrumb-item.active {
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .table th {
+            color: var(--text-primary) !important;
+            background-color: var(--bg-secondary) !important;
+        }
+        
+        [data-theme="dark"] .table td {
+            color: var(--text-primary) !important;
+            border-color: var(--border-color) !important;
+        }
+        
+        [data-theme="dark"] .list-group-item {
+            background-color: var(--bg-secondary) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-primary) !important;
+        }
+
+        /* Orbital Logo Animation - Fixed */
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            position: relative;
+            display: block;
+        }
+        
+        .orbital-ring {
+            position: absolute;
+            border: 3px solid;
+            border-radius: 50%;
+            animation: orbit linear infinite;
+        }
+        
+        .orbital-ring:nth-child(1) {
+            width: 60px;
+            height: 60px;
+            top: 10px;
+            left: 10px;
+            border-color: #2563eb;
+            animation-duration: 20s;
+            opacity: 0.8;
+        }
+        
+        .orbital-ring-2 {
+            width: 70px;
+            height: 70px;
+            top: 5px;
+            left: 5px;
+            border-color: #06b6d4;
+            animation-duration: 15s;
+            animation-direction: reverse;
+            opacity: 0.6;
+        }
+        
+        .orbital-ring-3 {
+            width: 80px;
+            height: 80px;
+            top: 0;
+            left: 0;
+            border-color: #7c3aed;
+            animation-duration: 25s;
+            opacity: 0.4;
+        }
+        
+        .logo-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            color: white !important;
+            font-weight: bold;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.7rem;
+            margin-top: 2px;
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        
+        @keyframes orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Search Bar Fixed - Dark Mode and Size */
+        .navbar-right .form-control {
+            width: 300px !important;
+            height: 50px !important;
+            font-size: 1.1rem !important;
+            padding: 0.75rem 1rem !important;
+            background: var(--light-color) !important;
+            border: 2px solid var(--border-color) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .navbar-right .form-control {
+            background: var(--bg-secondary) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .navbar-right .form-control::placeholder {
+            color: var(--text-secondary) !important;
+            opacity: 1 !important;
+        }
+        
+        [data-theme="dark"] .navbar-right .form-control:focus {
+            background: var(--bg-secondary) !important;
+            border-color: var(--primary-color) !important;
+            color: var(--text-primary) !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+        }
+        
+        /* Form Controls Dark Mode Fix */
+        [data-theme="dark"] .form-control {
+            background: var(--bg-secondary) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .form-control::placeholder {
+            color: var(--text-secondary) !important;
+            opacity: 1 !important;
+        }
+        
+        [data-theme="dark"] .form-control:focus {
+            background: var(--bg-secondary) !important;
+            border-color: var(--primary-color) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .form-select {
+            background: var(--bg-secondary) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .form-select:focus {
+            background: var(--bg-secondary) !important;
+            border-color: var(--primary-color) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        [data-theme="dark"] .input-group-text {
+            background: var(--bg-secondary) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        /* Partners Carousel Styles */
+        .trusted-partners {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        [data-theme="dark"] .trusted-partners {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .partners-carousel {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+        
+        .partners-track {
+            display: flex;
+            animation: scroll-partners 30s linear infinite;
+            width: calc(200px * 12);
+        }
+        
+        .partner-logo {
+            flex: 0 0 200px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            filter: grayscale(100%) opacity(0.7);
+            transition: all 0.3s ease;
+        }
+        
+        .partner-logo:hover {
+            filter: grayscale(0%) opacity(1);
+            transform: scale(1.1);
+        }
+        
+        .partner-logo img {
+            max-height: 50px;
+            max-width: 120px;
+            object-fit: contain;
+        }
+        
+        @keyframes scroll-partners {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-200px * 8)); }
+        }
+        
+        .partners-carousel:hover .partners-track {
+            animation-play-state: paused;
+        }
+        
+        /* Footer Styles */
+        .footer {
+            margin-top: auto;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+        }
+        
+        .footer-links li { margin-bottom: 8px; }
+        .footer-links a {
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-links a:hover { color: var(--primary-color) !important; }
+        
+        .social-link {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 40px;
             height: 40px;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            background-color: #e9ecef;
-            color: var(--secondary-color);
-            margin-right: 10px;
+            color: white;
+            text-decoration: none;
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
         
-        .social-icons a:hover {
-            background-color: var(--primary-color);
+        .social-link:hover {
+            background: var(--primary-color);
             color: white;
-            transform: translateY(-3px);
+            transform: translateY(-2px);
+        }
+        
+        .logo-container-small { width: 40px; height: 40px; }
+        .orbital-ring-small {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: orbit 15s linear infinite;
+        }
+        
+        .orbital-ring-small:nth-child(1) {
+            width: 30px; height: 30px; top: 5px; left: 5px;
+            border-color: var(--primary-color);
+        }
+        
+        .orbital-ring-small-2 {
+            width: 40px; height: 40px; top: 0; left: 0;
+            animation-duration: 10s; animation-direction: reverse;
+            border-color: var(--accent-color);
+        }
+        
+        .logo-text-small {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10px; font-weight: bold;
+        }
+        
+        [data-theme="dark"] .footer {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #000000 100%) !important;
+        }
+        
+        .logo-text-brand {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        [data-theme="dark"] .logo-text-brand {
+            color: var(--text-secondary);
+        }
+        
+        .form-control {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--light-color);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+        
+        [data-theme="dark"] .form-control {
+            background: var(--bg-secondary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: var(--light-color);
+            color: var(--text-primary);
+        }
+        
+        [data-theme="dark"] .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
         }
     </style>
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ path('client.product.home') }}">
-                <i class="bi bi-shop me-2"></i>E-Commerce
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {{ app.request.get('_route') == 'client.product.home' ? 'active' }}" 
-                           href="{{ path('client.product.home') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Categories</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Promotions</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <!-- Cart Icon -->
-                    <a href="{{ path('client.bucket.home') }}" class="bucket-icon position-relative me-4">
-                        <i class="bi bi-cart3"></i>
-                        <span class="bucket-badge">{{ cart_item_count ?? 0 }}</span>
-                    </a>
-                   <!-- User Menu -->
-                        <div class="dropdown">
-                            {% if app.user %}
-                                <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-circle me-2"></i>{{ app.user.email }}
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="{{ path('client.profile.edit') }}"><i class="bi bi-person me-2"></i>Profile</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item text-danger" href="{{path('app_logout')}}">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                    </a></li>
-                                </ul>
-                            {% else %}
-                                <a href="{{path('app_login')}}" class="btn btn-success">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
-                                </a>
-                            {% endif %}
-                        </div>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="text-center py-4 border-bottom border-opacity-10">
+                <div class="logo-container position-relative d-inline-block">
+                    <div class="orbital-ring"></div>
+                    <div class="orbital-ring orbital-ring-2"></div>
+                    <div class="orbital-ring orbital-ring-3"></div>
+                    <div class="logo-text">
+                        <span class="fw-bold fs-4 text-white">ORBEX</span>
+                        <div class="logo-subtitle text-white-50 small">E-Commerce</div>
+                    </div>
                 </div>
             </div>
         </div>
+        
+        <div class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Shopping</div>
+                <a href="{{ path('client.product.home') }}" class="nav-link {{ app.request.get('_route') == 'client.product.home' ? 'active' }}">
+                    <i class="bi bi-house"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{{ path('client.product.home') }}" class="nav-link">
+                    <i class="bi bi-grid"></i>
+                    <span>All Products</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="bi bi-tags"></i>
+                    <span>Categories</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="bi bi-percent"></i>
+                    <span>Promotions</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Account</div>
+                <a href="{{ path('client.bucket.home') }}" class="nav-link {{ app.request.get('_route') starts with 'client.bucket' ? 'active' }}">
+                    <i class="bi bi-cart"></i>
+                    <span>Shopping Cart</span>
+                </a>
+                {% if app.user %}
+                <a href="#" class="nav-link">
+                    <i class="bi bi-person"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Order History</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="bi bi-heart"></i>
+                    <span>Wishlist</span>
+                </a>
+                {% endif %}
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Support</div>
+                <a href="#" class="nav-link">
+                    <i class="bi bi-headset"></i>
+                    <span>Help Center</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="bi bi-telephone"></i>
+                    <span>Contact Us</span>
+                </a>
+            </div>
+        </div>
     </nav>
-
+    
+    <!-- Top Navigation -->
+    <nav class="top-navbar">
+        <div class="navbar-left">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="bi bi-list"></i>
+            </button>
+            <a href="{{ path('client.product.home') }}" class="navbar-brand d-md-none">
+                <div class="logo-container">
+                    <div class="orbital-ring orbital-ring-3"></div>
+                    <div class="orbital-ring orbital-ring-2"></div>
+                    <div class="orbital-ring orbital-ring-1"></div>
+                    <div class="logo-text">Orbex</div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="navbar-right">
+            <!-- Search Bar (hidden on mobile) -->
+            <div class="d-none d-lg-block">
+                <form method="post" action="{{ path('client.product.home') }}" class="d-flex align-items-center gap-2">
+                    <input type="text" name="searchQuery" class="form-control me-2" placeholder="Search products..." style="width: 200px;">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#filterModal">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Dark Mode Toggle -->
+            <button class="dark-mode-toggle" id="darkModeToggle" data-bs-toggle="tooltip" title="Toggle Dark Mode">
+                <i class="bi bi-moon-fill" id="darkModeIcon"></i>
+            </button>
+            
+            <!-- Cart Icon -->
+            <a href="{{ path('client.bucket.home') }}" class="cart-icon">
+                <i class="bi bi-cart3"></i>
+                <span class="cart-badge">{{ cart_item_count ?? 0 }}</span>
+            </a>
+            
+            <!-- User Menu -->
+            <div class="dropdown user-menu">
+                {% if app.user %}
+                    <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ app.user.email|first|upper }}
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><h6 class="dropdown-header">{{ app.user.email }}</h6></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Order History</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
     <!-- Main Content -->
-    <main class="container my-5">
+    <main class="main-content fade-in">
         {% block body %}{% endblock %}
+        
+        <!-- Trusted Partners Section -->
+        <section class="trusted-partners py-5 mt-5">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h3 class="fw-bold text-dark mb-2">Our Trusted Partners</h3>
+                    <p class="text-muted">We work with the world's leading technology brands</p>
+                </div>
+                
+                <div class="partners-carousel">
+                    <div class="partners-track">
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">Apple</div>
+                        </div>
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">Lenovo</div>
+                        </div>
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">Samsung</div>
+                        </div>
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">Dell</div>
+                        </div>
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">ASUS</div>
+                        </div>
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">Huawei</div>
+                        </div>
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">MSI</div>
+                        </div>
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">HP</div>
+                        </div>
+                        <!-- Duplicate for seamless loop -->
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">Apple</div>
+                        </div>
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">Lenovo</div>
+                        </div>
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">Samsung</div>
+                        </div>
+                        <div class="partner-logo">
+                            <div class="logo-text-brand">Dell</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h5 class="mb-4">E-Commerce</h5>
-                    <p class="mb-4">Your favorite online store for all your technological needs. Quality products at competitive prices.</p>
-                    <div class="social-icons d-flex">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-twitter"></i></a>
-                        <a href="#"><i class="bi bi-instagram"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
+    <footer class="footer bg-dark text-white">
+        <div class="container py-5">
+            <div class="row g-4">
+                <!-- Company Info -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="logo-container-small position-relative me-3">
+                                <div class="orbital-ring-small"></div>
+                                <div class="orbital-ring-small orbital-ring-small-2"></div>
+                                <div class="logo-text-small">
+                                    <span class="fw-bold text-white">ORBEX</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="text-white mb-0">Orbex Store</h5>
+                                <small class="text-white-50">Premium E-Commerce</small>
+                            </div>
+                        </div>
+                        <p class="text-white-50 mb-4">
+                            Your trusted partner for premium technology products. We deliver quality, innovation, and exceptional customer service.
+                        </p>
+                        <div class="social-links d-flex gap-3">
+                            <a href="#" class="social-link" data-bs-toggle="tooltip" title="Facebook">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                            <a href="#" class="social-link" data-bs-toggle="tooltip" title="Twitter">
+                                <i class="bi bi-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link" data-bs-toggle="tooltip" title="Instagram">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                            <a href="#" class="social-link" data-bs-toggle="tooltip" title="LinkedIn">
+                                <i class="bi bi-linkedin"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                    <h5 class="mb-4">Quick Links</h5>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white fw-semibold mb-3">Quick Links</h6>
                     <ul class="list-unstyled footer-links">
-                        <li><a href="{{ path('client.product.home') }}">Home</a></li>
-                        <li><a href="#">Products</a></li>
-                        <li><a href="#">Categories</a></li>
-                        <li><a href="#">Promotions</a></li>
+                        <li><a href="{{ path('client.product.home') }}" class="text-white-50">Products</a></li>
+                        <li><a href="#" class="text-white-50">Categories</a></li>
+                        <li><a href="#" class="text-white-50">Deals</a></li>
+                        <li><a href="#" class="text-white-50">New Arrivals</a></li>
+                        <li><a href="#" class="text-white-50">Best Sellers</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
-                    <h5 class="mb-4">My Account</h5>
+
+                <!-- Customer Service -->
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white fw-semibold mb-3">Customer Service</h6>
                     <ul class="list-unstyled footer-links">
-                        <li><a href="#">My Profile</a></li>
-                        <li><a href="#">My Orders</a></li>
-                        <li><a href="#">Wishlist</a></li>
-                        <li><a href="#">Settings</a></li>
+                        <li><a href="#" class="text-white-50">Contact Us</a></li>
+                        <li><a href="#" class="text-white-50">Help Center</a></li>
+                        <li><a href="#" class="text-white-50">Shipping Info</a></li>
+                        <li><a href="#" class="text-white-50">Returns</a></li>
+                        <li><a href="#" class="text-white-50">Track Order</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3 col-md-4">
-                    <h5 class="mb-4">Contact</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Tunis, Tunisia</li>
-                        <li class="mb-2"><i class="bi bi-telephone me-2"></i> +216 12 345 678</li>
-                        <li class="mb-2"><i class="bi bi-envelope me-2"></i> contact@ecommerce.tn</li>
-                        <li class="mb-2"><i class="bi bi-clock me-2"></i> Mon-Fri: 9AM-6PM</li>
+
+                <!-- Company -->
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white fw-semibold mb-3">Company</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#" class="text-white-50">About Us</a></li>
+                        <li><a href="#" class="text-white-50">Careers</a></li>
+                        <li><a href="#" class="text-white-50">Press</a></li>
+                        <li><a href="#" class="text-white-50">Partners</a></li>
+                        <li><a href="#" class="text-white-50">Investors</a></li>
                     </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white fw-semibold mb-3">Contact</h6>
+                    <div class="contact-info">
+                        <div class="d-flex align-items-start mb-2">
+                            <i class="bi bi-geo-alt text-primary me-2 mt-1"></i>
+                            <small class="text-white-50">
+                                123 Tech Street<br>
+                                Tunis, Tunisia 1000
+                            </small>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-telephone text-primary me-2"></i>
+                            <small class="text-white-50">+216 71 123 456</small>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-envelope text-primary me-2"></i>
+                            <small class="text-white-50">info@orbex.tn</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clock text-primary me-2"></i>
+                            <small class="text-white-50">Mon-Fri: 9AM-6PM</small>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <hr class="my-4">
-            <div class="row">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <p class="mb-0">&copy; {{ "now"|date("Y") }} E-Commerce. All rights reserved.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="#" class="text-dark text-decoration-none me-3">Terms & Conditions</a>
-                    <a href="#" class="text-dark text-decoration-none">Privacy Policy</a>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom border-top border-secondary">
+            <div class="container py-3">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="text-white-50 mb-0 small">
+                            &copy; 2024 Orbex. All rights reserved.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-md-end gap-4">
+                            <a href="#" class="text-white-50 small text-decoration-none">Privacy Policy</a>
+                            <a href="#" class="text-white-50 small text-decoration-none">Terms of Service</a>
+                            <a href="#" class="text-white-50 small text-decoration-none">Cookie Policy</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -295,37 +1165,93 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     {% block javascripts %}
     <script>
-        // Function to update cart badge
-        function updateBucketBadge(count) {
-            const badge = document.querySelector('.bucket-badge');
-            if (badge) {
-                badge.textContent = count;
-                if (count > 0) {
-                    badge.style.display = 'block';
-                } else {
-                    badge.style.display = 'none';
-                }
+        // Dark mode functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+        const body = document.body;
+        
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        body.setAttribute('data-theme', currentTheme);
+        updateDarkModeIcon(currentTheme);
+        
+        darkModeToggle.addEventListener('click', function() {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateDarkModeIcon(newTheme);
+        });
+        
+        function updateDarkModeIcon(theme) {
+            if (theme === 'dark') {
+                darkModeIcon.className = 'bi bi-sun-fill';
+                darkModeToggle.setAttribute('title', 'Switch to Light Mode');
+            } else {
+                darkModeIcon.className = 'bi bi-moon-fill';
+                darkModeToggle.setAttribute('title', 'Switch to Dark Mode');
             }
         }
         
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Update cart badge
-            
-            // Add to cart functionality
-            document.querySelectorAll('.btn-add-to-cart').forEach(button => {
-                button.addEventListener('click', function() {
-                    const currentCount = parseInt(document.querySelector('.bucket-badge').textContent);
-                    updateBucketBadge(currentCount + 1);
-                    
-                    // Animation
-                    const bucketIcon = document.querySelector('.bucket-icon');
-                    bucketIcon.classList.add('animate');
-                    setTimeout(() => {
-                        bucketIcon.classList.remove('animate');
-                    }, 500);
-                });
+        // Sidebar functionality
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('show');
+            sidebarOverlay.classList.toggle('show');
+        }
+        
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+        
+        // Close sidebar on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+                toggleSidebar();
+            }
+        });
+        
+        // Cart functionality
+        function updateCartBadge(count) {
+            const badge = document.querySelector('.cart-badge');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'block' : 'none';
+            }
+        }
+        
+        // Add to cart animation
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-add-to-cart')) {
+                const cartIcon = document.querySelector('.cart-icon');
+                cartIcon.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    cartIcon.style.transform = 'scale(1)';
+                }, 200);
+            }
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
+        });
+        
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     </script>
     {% endblock %}

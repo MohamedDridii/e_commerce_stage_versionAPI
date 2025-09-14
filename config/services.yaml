@@ -4,9 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    cloudinary_cloud_name: '%env(CLOUDINARY_CLOUD_NAME)%'
-    cloudinary_api_key: '%env(CLOUDINARY_API_KEY)%'
-    cloudinary_api_secret: '%env(CLOUDINARY_API_SECRET)%'
+    ##imagekit_url_endpoint: '%env(IMAGEKIT_URL_ENDPOINT)%'
+    #imagekit_public_key: '%env(IMAGEKIT_PUBLIC_KEY)%'
+   # imagekit_private_key: '%env(IMAGEKIT_PRIVATE_KEY)%'
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -21,12 +22,12 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-    App\Services\CloudinaryImageService:
+    #App\Services\ImageKitService:
         arguments:
-            $cloudName: '%cloudinary_cloud_name%'
-            $apiKey: '%cloudinary_api_key%'
-            $apiSecret: '%cloudinary_api_secret%'
-            $logger: '@logger'
+           # $urlEndpoint: '%imagekit_url_endpoint%'
+            #$publicKey: '%imagekit_public_key%'
+            #$privateKey: '%imagekit_private_key%'
+            #$logger: '@logger'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

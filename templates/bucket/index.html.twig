@@ -1,116 +1,238 @@
 {% extends 'base_client.html.twig' %}
 
-{% block title %}Your Bucket | E-Commerce{% endblock %}
+{% block title %}Shopping Cart | Orbex Store{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <h1 class="page-title mb-4">Your Shopping Bucket</h1>
+<div class="fade-in">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 fw-bold text-dark mb-2">Shopping Cart</h1>
+            <p class="text-muted mb-0">Review your items before checkout</p>
+        </div>
+        {% if items is not empty %}
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary rounded-pill px-3 py-2">
+                {{ items|length }} Item{{ items|length > 1 ? 's' : '' }}
+            </span>
+        </div>
+        {% endif %}
+    </div>
     
     {% if items is empty %}
-        <div class="alert alert-info text-center py-5">
-            <i class="bi bi-cart-x fs-1 mb-3"></i>
-            <h3>Your bucket is empty</h3>
-            <p class="mb-0">Start shopping now to add items to your bucket</p>
-            <div class="mt-4">
-                <a href="{{ path('client.product.home') }}" class="btn btn-primary px-4">
-                    Browse Products
-                </a>
+        <!-- Empty Cart State -->
+        <div class="text-center py-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body py-5">
+                    <div class="mb-4">
+                        <div class="bg-light rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                            <i class="bi bi-cart-x text-muted" style="font-size: 3rem;"></i>
+                        </div>
+                    </div>
+                    <h3 class="h4 fw-bold text-dark mb-3">Your cart is empty</h3>
+                    <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet. Start shopping to fill it up!</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ path('client.product.home') }}" class="btn btn-primary btn-lg px-5">
+                            <i class="bi bi-shop me-2"></i>Start Shopping
+                        </a>
+                        <a href="#" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-tags me-2"></i>Browse Categories
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     {% else %}
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Product</th>
-                                <th>Unit Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in items %}
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
+        <div class="row g-4">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 py-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="mb-0 fw-semibold">Cart Items</h5>
+                            <button class="btn btn-outline-danger btn-sm" onclick="clearCart()">
+                                <i class="bi bi-trash me-2"></i>Clear Cart
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        {% for item in items %}
+                            <div class="border-bottom p-4 cart-item">
+                                <div class="row align-items-center g-3">
+                                    <!-- Product Image -->
+                                    <div class="col-md-2">
                                         {% if item.product.image %}
                                             <img src="{{ asset('uploads/products/' ~ item.product.image) }}" 
                                                  alt="{{ item.product.name }}" 
-                                                 class="img-thumbnail me-3" 
-                                                 style="width: 80px; height: 80px; object-fit: cover;">
+                                                 class="img-fluid rounded shadow-sm"
+                                                 style="height: 80px; width: 80px; object-fit: cover;">
                                         {% else %}
-                                            <div class="bg-light rounded d-flex align-items-center justify-content-center me-3" style="width: 80px; height: 80px;">
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center shadow-sm" style="width: 80px; height: 80px;">
                                                 <i class="bi bi-image text-muted"></i>
                                             </div>
                                         {% endif %}
-                                        <div>
-                                            <h6 class="mb-0">{{ item.product.name }}</h6>
-                                            {% if item.product.category %}
-                                                <small class="text-muted">{{ item.product.category.name }}</small>
-                                            {% endif %}
+                                    </div>
+                                    
+                                    <!-- Product Details -->
+                                    <div class="col-md-4">
+                                        <h6 class="fw-semibold mb-1">{{ item.product.name }}</h6>
+                                        {% if item.product.category %}
+                                            <span class="badge bg-light text-muted small">{{ item.product.category.name }}</span>
+                                        {% endif %}
+                                        <div class="text-primary fw-bold mt-2">{{ item.product.price }} TND</div>
+                                    </div>
+                                    
+                                    <!-- Quantity Controls -->
+                                    <div class="col-md-3">
+                                        <form action="{{ path('client.bucket.update', {'id': item.product.id}) }}" 
+                                              method="post" 
+                                              class="d-flex align-items-center justify-content-center">
+                                            <div class="input-group" style="max-width: 140px;">
+                                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decreaseQuantity(this)">
+                                                    <i class="bi bi-dash"></i>
+                                                </button>
+                                                <input type="number" 
+                                                       name="quantite" 
+                                                       value="{{ item.quantity }}" 
+                                                       min="1" 
+                                                       class="form-control form-control-sm text-center"
+                                                       onchange="this.form.submit()">
+                                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseQuantity(this)">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- Subtotal and Actions -->
+                                    <div class="col-md-3">
+                                        <div class="text-end">
+                                            <div class="h6 fw-bold text-dark mb-2">{{ item.sousTotal }} TND</div>
+                                            <div class="d-flex justify-content-end gap-2">
+                                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" title="Save for Later">
+                                                    <i class="bi bi-heart"></i>
+                                                </button>
+                                                <a href="{{ path('client.bucket.remove', {'id': item.product.id}) }}" 
+                                                   class="btn btn-outline-danger btn-sm"
+                                                   data-bs-toggle="tooltip" title="Remove Item"
+                                                   onclick="return confirm('Are you sure you want to remove this item?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </td>
-                                <td>{{ item.product.price }} TND</td>
-                                <td>
-                                    <form action="{{ path('client.bucket.update', {'id': item.product.id}) }}" 
-                                          method="post" 
-                                          class="d-flex align-items-center">
-                                        <input type="number" 
-                                               name="quantite" 
-                                               value="{{ item.quantity }}" 
-                                               min="1" 
-                                               class="form-control form-control-sm me-2" 
-                                               style="width: 70px;">
-                                        <button type="submit" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-arrow-repeat me-1"></i> Update
-                                        </button>
-                                    </form>
-                                </td>
-                                <td>{{ item.sousTotal }} TND</td>
-                                <td>
-                                    <a href="{{ path('client.bucket.remove', {'id': item.product.id}) }}" 
-                                       class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-trash me-1"></i> Remove
-                                    </a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
                 
-                <div class="d-flex justify-content-end mt-4">
-                    <div class="border p-4 rounded bg-white" style="width: 300px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <h5 class="mb-3 border-bottom pb-2">Order Summary</h5>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal:</span>
-                            <span>{{ total }} TND</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Shipping:</span>
-                            <span>7.00 TND</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tax:</span>
-                            <span>0.00 TND</span>
-                        </div>
-                        <hr class="my-2">
-                        <div class="d-flex justify-content-between fw-bold fs-5">
-                            <span>Total:</span>
-                            <span>{{ total + 7 }} TND</span>
+                <!-- Continue Shopping -->
+                <div class="mt-4">
+                    <a href="{{ path('client.product.home') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
+                    <div class="card-header bg-white border-0 py-4">
+                        <h5 class="mb-0 fw-semibold">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Summary Details -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted">Subtotal ({{ items|length }} items)</span>
+                                <span class="fw-semibold">{{ total }} TND</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted">Shipping</span>
+                                <span class="fw-semibold">7.00 TND</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted">Tax</span>
+                                <span class="fw-semibold">0.00 TND</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted">Discount</span>
+                                <span class="text-success fw-semibold">-0.00 TND</span>
+                            </div>
+                            <hr class="my-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="h6 fw-bold">Total</span>
+                                <span class="h5 fw-bold text-primary">{{ total + 7 }} TND</span>
+                            </div>
                         </div>
                         
-                        <div class="d-grid gap-2 mt-4">
-                            <a href="{{ path('client.product.home') }}" class="btn btn-outline-secondary">
-                                Continue Shopping
+                        <!-- Promo Code -->
+                        <div class="mb-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Promo code">
+                                <button class="btn btn-outline-secondary" type="button">Apply</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Checkout Button -->
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('client.bucket.validate') }}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-credit-card me-2"></i>Proceed to Checkout
                             </a>
-                            <a href="{{ path('client.bucket.validate') }}" class="btn btn-success">
-                                Validate Order
-                            </a>
+                            <button class="btn btn-outline-secondary">
+                                <i class="bi bi-paypal me-2"></i>PayPal Express
+                            </button>
+                        </div>
+                        
+                        <!-- Security Info -->
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-shield-check text-success me-2"></i>
+                                <small class="text-muted">Secure checkout with SSL encryption</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Delivery Information -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body">
+                        <h6 class="fw-semibold mb-3">Delivery Information</h6>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                        <i class="bi bi-truck text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <small class="fw-semibold d-block">Free Delivery</small>
+                                        <small class="text-muted">Orders over 100 TND</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                                        <i class="bi bi-clock text-success"></i>
+                                    </div>
+                                    <div>
+                                        <small class="fw-semibold d-block">Fast Delivery</small>
+                                        <small class="text-muted">2-3 business days</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                                        <i class="bi bi-arrow-clockwise text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <small class="fw-semibold d-block">Easy Returns</small>
+                                        <small class="text-muted">30-day return policy</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -118,4 +240,78 @@
         </div>
     {% endif %}
 </div>
+
+<script>
+    function increaseQuantity(button) {
+        const input = button.previousElementSibling;
+        const currentValue = parseInt(input.value);
+        input.value = currentValue + 1;
+        input.form.submit();
+    }
+    
+    function decreaseQuantity(button) {
+        const input = button.nextElementSibling;
+        const currentValue = parseInt(input.value);
+        if (currentValue > 1) {
+            input.value = currentValue - 1;
+            input.form.submit();
+        }
+    }
+    
+    function clearCart() {
+        if (confirm('Are you sure you want to clear your entire cart?')) {
+            // Add clear cart functionality here
+            console.log('Clear cart functionality to be implemented');
+        }
+    }
+    
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+    
+    // Add smooth animations for cart updates
+    document.querySelectorAll('.cart-item').forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#f8f9fa';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = 'transparent';
+        });
+    });
+</script>
+
+<style>
+    .cart-item {
+        transition: all 0.2s ease;
+    }
+    
+    .cart-item:hover {
+        background-color: #f8f9fa !important;
+    }
+    
+    .input-group .btn {
+        border-color: #e2e8f0;
+    }
+    
+    .input-group .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: none;
+    }
+    
+    .sticky-top {
+        transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 991.98px) {
+        .sticky-top {
+            position: relative !important;
+            top: auto !important;
+        }
+    }
+</style>
 {% endblock %}
