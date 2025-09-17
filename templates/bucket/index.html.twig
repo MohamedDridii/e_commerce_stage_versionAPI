@@ -62,7 +62,7 @@
                                     <!-- Product Image -->
                                     <div class="col-md-2">
                                         {% if item.product.image %}
-                                            <img src="{{ asset('uploads/products/' ~ item.product.image) }}" 
+                                            <img src="{{ item.product.image }}" 
                                                  alt="{{ item.product.name }}" 
                                                  class="img-fluid rounded shadow-sm"
                                                  style="height: 80px; width: 80px; object-fit: cover;">
@@ -87,17 +87,17 @@
                                         <form action="{{ path('client.bucket.update', {'id': item.product.id}) }}" 
                                               method="post" 
                                               class="d-flex align-items-center justify-content-center">
-                                            <div class="input-group" style="max-width: 140px;">
-                                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decreaseQuantity(this)">
+                                            <div class="quantity-controls d-flex align-items-center" style="max-width: 140px;">
+                                                <button type="button" class="btn btn-outline-secondary btn-sm quantity-btn" onclick="decreaseQuantity(this)">
                                                     <i class="bi bi-dash"></i>
                                                 </button>
                                                 <input type="number" 
                                                        name="quantite" 
                                                        value="{{ item.quantity }}" 
                                                        min="1" 
-                                                       class="form-control form-control-sm text-center"
+                                                       class="form-control form-control-sm text-center quantity-input"
                                                        onchange="this.form.submit()">
-                                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseQuantity(this)">
+                                                <button type="button" class="btn btn-outline-secondary btn-sm quantity-btn" onclick="increaseQuantity(this)">
                                                     <i class="bi bi-plus"></i>
                                                 </button>
                                             </div>
@@ -170,8 +170,8 @@
                         <!-- Promo Code -->
                         <div class="mb-4">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Promo code">
-                                <button class="btn btn-outline-secondary" type="button">Apply</button>
+                                <input type="text" class="form-control promo-input" placeholder="Promo code">
+                                <button class="btn btn-outline-secondary promo-btn" type="button">Apply</button>
                             </div>
                         </div>
                         
@@ -186,10 +186,10 @@
                         </div>
                         
                         <!-- Security Info -->
-                        <div class="mt-4 p-3 bg-light rounded">
+                        <div class="mt-4 p-3 security-info rounded">
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-shield-check text-success me-2"></i>
-                                <small class="text-muted">Secure checkout with SSL encryption</small>
+                                <small class="security-text">Secure checkout with SSL encryption</small>
                             </div>
                         </div>
                     </div>
@@ -286,31 +286,261 @@
 </script>
 
 <style>
+    /* Cart Item Styles */
     .cart-item {
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        padding: 1.5rem;
     }
     
     .cart-item:hover {
-        background-color: #f8f9fa !important;
-    }
-    
-    .input-group .btn {
-        border-color: #e2e8f0;
-    }
-    
-    .input-group .form-control:focus {
+        background: var(--bg-primary) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
         border-color: var(--primary-color);
-        box-shadow: none;
     }
     
+    /* Card Styles */
+    .card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: var(--bg-secondary) !important;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-primary);
+    }
+    
+    .card-body {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+    
+    /* Text Color Fixes */
+    .text-dark {
+        color: var(--text-primary) !important;
+    }
+    
+    .text-muted {
+        color: var(--text-secondary) !important;
+    }
+    
+    .bg-light {
+        background: var(--bg-secondary) !important;
+        border: 1px solid var(--border-color);
+    }
+    
+    /* Quantity Controls */
+    .quantity-controls {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--bg-secondary);
+    }
+    
+    .quantity-btn {
+        border: none !important;
+        border-radius: 0 !important;
+        background: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+        width: 40px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+    
+    .quantity-btn:hover {
+        background: var(--primary-color) !important;
+        color: white !important;
+    }
+    
+    .quantity-input {
+        border: none !important;
+        border-left: 1px solid var(--border-color) !important;
+        border-right: 1px solid var(--border-color) !important;
+        border-radius: 0 !important;
+        background: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+        width: 60px;
+        height: 38px;
+        font-weight: 600;
+    }
+    
+    .quantity-input:focus {
+        border-color: var(--primary-color) !important;
+        background: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+        box-shadow: none !important;
+    }
+    
+    /* Promo Code Input */
+    .promo-input {
+        background: var(--bg-secondary) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .promo-input:focus {
+        border-color: var(--primary-color) !important;
+        background: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25) !important;
+    }
+    
+    .promo-input::placeholder {
+        color: var(--text-secondary) !important;
+    }
+    
+    .promo-btn {
+        border-color: var(--border-color) !important;
+        color: var(--text-primary) !important;
+        background: var(--bg-secondary) !important;
+    }
+    
+    .promo-btn:hover {
+        background: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+        color: white !important;
+    }
+    
+    /* Security Info */
+    .security-info {
+        background: var(--bg-primary) !important;
+        border: 1px solid var(--border-color);
+    }
+    
+    .security-text {
+        color: var(--text-secondary) !important;
+    }
+    
+    /* Button Styles */
+    .btn-outline-danger {
+        border-color: var(--danger-color) !important;
+        color: var(--danger-color) !important;
+        background: transparent !important;
+    }
+    
+    .btn-outline-danger:hover {
+        background: var(--danger-color) !important;
+        border-color: var(--danger-color) !important;
+        color: white !important;
+    }
+    
+    .btn-outline-secondary {
+        border-color: var(--border-color) !important;
+        color: var(--text-primary) !important;
+        background: transparent !important;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: var(--bg-primary) !important;
+        border-color: var(--primary-color) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .btn-outline-primary {
+        border-color: var(--primary-color) !important;
+        color: var(--primary-color) !important;
+        background: transparent !important;
+    }
+    
+    .btn-outline-primary:hover {
+        background: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+        color: white !important;
+    }
+    
+    /* Badge Styles */
+    .badge {
+        background: var(--bg-primary) !important;
+        color: var(--text-secondary) !important;
+        border: 1px solid var(--border-color);
+    }
+    
+    /* List Group */
+    .list-group-item {
+        background: var(--bg-secondary) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    /* Sticky Sidebar */
     .sticky-top {
         transition: all 0.3s ease;
     }
     
+    /* Animations */
+    .fade-in {
+        animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { 
+            opacity: 0; 
+            transform: translateY(20px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+    
+    /* Enhanced Hover Effects */
+    .btn {
+        transition: all 0.3s ease;
+    }
+    
+    .card {
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Product Image Hover */
+    .cart-item img {
+        transition: transform 0.3s ease;
+    }
+    
+    .cart-item:hover img {
+        transform: scale(1.05);
+    }
+    
+    /* Responsive Design */
     @media (max-width: 991.98px) {
         .sticky-top {
             position: relative !important;
             top: auto !important;
+        }
+        
+        .cart-item {
+            padding: 1rem;
+        }
+        
+        .quantity-controls {
+            max-width: 120px !important;
+        }
+    }
+    
+    @media (max-width: 767.98px) {
+        .cart-item .row {
+            text-align: center;
+        }
+        
+        .cart-item .col-md-3,
+        .cart-item .col-md-4 {
+            margin-bottom: 1rem;
         }
     }
 </style>

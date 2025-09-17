@@ -4,27 +4,55 @@
 
 {% block body %}
     <div class="container my-5">
-        <h1>Edit Profile</h1>
-        <div class="card">
-            <div class="card-body">
-                {{ form_start(form) }}
-                    <div class="form-group">
-                        {{ form_label(form.email) }}
-                        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.email) }}
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="modern-form-card">
+                    <div class="form-header">
+                        <h1 class="form-title">
+                            <i class="bi bi-person-gear me-2"></i>
+                            Edit Profile
+                        </h1>
+                        <p class="form-subtitle">Update your account information</p>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.plainPassword) }}
-                        {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.plainPassword) }}
+                    
+                    <div class="form-content">
+                        {{ form_start(form, {'attr': {'class': 'modern-form'}}) }}
+                            <div class="form-group">
+                                {{ form_label(form.email, null, {'attr': {'class': 'modern-label'}}) }}
+                                {{ form_widget(form.email, {'attr': {'class': 'modern-input', 'placeholder': 'Enter your email address'}}) }}
+                                {{ form_errors(form.email) }}
+                            </div>
+                            
+                            <div class="form-group">
+                                {{ form_label(form.plainPassword, null, {'attr': {'class': 'modern-label'}}) }}
+                                {{ form_widget(form.plainPassword, {'attr': {'class': 'modern-input', 'placeholder': 'Enter new password (leave blank to keep current)'}}) }}
+                                {{ form_errors(form.plainPassword) }}
+                                <small class="form-text">Leave blank to keep your current password</small>
+                            </div>
+                            
+                            <div class="form-group checkbox-group">
+                                <div class="modern-checkbox">
+                                    {{ form_widget(form.agreeTerms, {'attr': {'class': 'checkbox-input'}}) }}
+                                    <label for="{{ form.agreeTerms.vars.id }}" class="checkbox-label">
+                                        {{ form.agreeTerms.vars.label }}
+                                    </label>
+                                </div>
+                                {{ form_errors(form.agreeTerms) }}
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="modern-btn primary">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Update Profile
+                                </button>
+                                <a href="{{ path('owner.home') }}" class="modern-btn secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Cancel
+                                </a>
+                            </div>
+                        {{ form_end(form) }}
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.agreeTerms) }}
-                        {{ form_widget(form.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-                        {{ form_errors(form.agreeTerms) }}
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Profile</button>
-                {{ form_end(form) }}
+                </div>
             </div>
         </div>
     </div>

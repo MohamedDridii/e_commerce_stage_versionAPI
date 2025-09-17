@@ -1,198 +1,640 @@
 {% extends 'base_client.html.twig' %}
 
-{% block title %}Order Confirmation | E-Commerce{% endblock %}
+{% block title %}Order Confirmation | Orbex Store{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <div class="alert alert-success border-0 shadow-sm">
-        <div class="d-flex align-items-center">
-            <div class="flex-shrink-0">
-                <i class="bi bi-check-circle-fill fs-1 me-3"></i>
+<div class="confirmation-container">
+    <!-- Success Animation & Message -->
+    <div class="success-hero">
+        <div class="success-animation">
+            <div class="success-circle">
+                <div class="success-checkmark">
+                    <i class="bi bi-check-lg"></i>
+                </div>
             </div>
-            <div class="flex-grow-1 ms-3">
-                <h1 class="alert-heading fw-bold mb-2">Order Confirmed!</h1>
-                <p class="mb-0">Your order has been successfully registered. An email confirmation has been sent to your address.</p>
+        </div>
+        <div class="success-content">
+            <h1 class="success-title">Order Confirmed Successfully!</h1>
+            <p class="success-subtitle">Thank you for your purchase. Your order has been confirmed and is being processed.</p>
+            <div class="order-number">
+                <span class="order-label">Order Number:</span>
+                <span class="order-value">#{{ commande.numeroCommande }}</span>
             </div>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm mb-5">
-        <div class="card-header bg-primary text-white py-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">Order Details</h2>
-                <span class="badge bg-light text-primary fs-6">Order #{{ commande.numeroCommande }}</span>
+    <!-- Order Summary Cards -->
+    <div class="summary-grid">
+        <!-- Customer Information -->
+        <div class="summary-card">
+            <div class="card-icon">
+                <i class="bi bi-person-circle"></i>
+            </div>
+            <h3 class="card-title">Customer Details</h3>
+            <div class="card-content">
+                <div class="detail-item">
+                    <span class="detail-label">Name:</span>
+                    <span class="detail-value">{{ commande.client.name }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">{{ commande.client.email }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">{{ commande.client.phoneNumber ?? 'Not provided' }}</span>
+                </div>
             </div>
         </div>
-        <div class="card-body p-4">
-            <div class="row mb-4">
-                <div class="col-lg-6 mb-4 mb-lg-0">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-header bg-light">
-                            <h4 class="mb-0">Customer Information</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="bi bi-person"></i>
-                                </div>
-                                <div>
-                                    <h5 class="mb-0">{{ commande.client.name }}</h5>
-                                    <p class="mb-0 text-muted">{{ commande.client.email }}</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="bi bi-geo-alt"></i>
-                                </div>
-                                <div>
-                                    <h5 class="mb-0">Delivery Address</h5>
-                                    <p class="mb-0">{{ commande.adressLivraison }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+        <!-- Delivery Information -->
+        <div class="summary-card">
+            <div class="card-icon">
+                <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <h3 class="card-title">Delivery Information</h3>
+            <div class="card-content">
+                <div class="detail-item">
+                    <span class="detail-label">Address:</span>
+                    <span class="detail-value">{{ commande.adressLivraison }}</span>
                 </div>
-                <div class="col-lg-6">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-header bg-light">
-                            <h4 class="mb-0">Order Information</h4>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between border-0 px-0">
-                                    <span class="text-muted">Order Number:</span>
-                                    <span class="fw-bold">{{ commande.numeroCommande }}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between border-0 px-0">
-                                    <span class="text-muted">Order Date:</span>
-                                    <span class="fw-bold">{{ commande.createdAt|date('d/m/Y H:i') }}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between border-0 px-0">
-                                    <span class="text-muted">Payment Method:</span>
-                                    <span class="fw-bold">Credit Card</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between border-0 px-0">
-                                    <span class="text-muted">Estimated Delivery:</span>
-                                    <span class="fw-bold">{{ "now"|date_modify("+3 days")|date('d/m/Y') }}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between border-0 px-0">
-                                    <span class="text-muted">Order Status:</span>
-                                    <span class="badge bg-success rounded-pill">Confirmed</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                <div class="detail-item">
+                    <span class="detail-label">Estimated Delivery:</span>
+                    <span class="detail-value">{{ "now"|date_modify("+3 days")|date('d/m/Y') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Delivery Method:</span>
+                    <span class="detail-value">Standard Shipping</span>
                 </div>
             </div>
+        </div>
 
-            <h4 class="mb-3">Order Items</h4>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Product</th>
-                            <th class="text-center">Price</th>
-                            <th class="text-center">Quantity</th>
-                            <th class="text-end">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ligne in commande.orderLines %}
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-light rounded d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
-                                        {% if ligne.product.image %}
-                                            <img src="{{ asset('uploads/products/' ~ ligne.product.image) }}" 
-                                                alt="{{ ligne.product.name }}" 
-                                                class="img-fluid" 
-                                                style="max-height: 50px;">
-                                        {% else %}
-                                            <i class="bi bi-image text-muted"></i>
-                                        {% endif %}
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-0">{{ ligne.product.name }}</h6>
-                                        <small class="text-muted">{{ ligne.product.category.name }}</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="text-center">{{ ligne.product.price }} TND</td>
-                            <td class="text-center">{{ ligne.quantity }}</td>
-                            <td class="text-end fw-bold">{{ ligne.product.price * ligne.quantity }} TND</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                    <tfoot class="table-group-divider">
-                        <tr>
-                            <td colspan="3" class="text-end fw-bold">Subtotal</td>
-                            <td class="text-end fw-bold">
-                                {% set grandTotal = 0 %}
-                                {% for ligne in commande.orderLines %}
-                                    {% set grandTotal = grandTotal + (ligne.product.price * ligne.quantity) %}
-                                {% endfor %}
-                                {{ grandTotal }} TND
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="text-end fw-bold">Shipping</td>
-                            <td class="text-end fw-bold">7.00 TND</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="text-end fw-bold">Tax</td>
-                            <td class="text-end fw-bold">0.00 TND</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="text-end h5">Grand Total</td>
-                            <td class="text-end h5 text-primary">{{ grandTotal + 7 }} TND</td>
-                        </tr>
-                    </tfoot>
-                </table>
+        <!-- Order Information -->
+        <div class="summary-card">
+            <div class="card-icon">
+                <i class="bi bi-receipt"></i>
+            </div>
+            <h3 class="card-title">Order Information</h3>
+            <div class="card-content">
+                <div class="detail-item">
+                    <span class="detail-label">Order Date:</span>
+                    <span class="detail-value">{{ commande.createdAt|date('d/m/Y H:i') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Payment Status:</span>
+                    <span class="status-badge confirmed">Confirmed</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Order Status:</span>
+                    <span class="status-badge processing">Processing</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="d-flex justify-content-between mt-5">
-        <a href="{{ path('client.product.home') }}" class="btn btn-outline-primary px-4 py-2">
-            <i class="bi bi-arrow-left me-2"></i>Back to Catalogue
-        </a>
-        <div>
-            <a href="{{ path('client.bucket.invoice', {id: commande.id}) }}" target="_blank"  class="btn btn-secondary px-4 py-2 me-2">
-                <i class="bi bi-printer me-2"></i>Print Invoice
+    <!-- Order Items -->
+    <div class="order-items-section">
+        <h2 class="section-title">
+            <i class="bi bi-bag-check me-2"></i>
+            Order Items
+        </h2>
+        <div class="items-container">
+            {% for ligne in commande.orderLines %}
+            <div class="order-item">
+                <div class="item-image">
+                    {% if ligne.product.image %}
+                        <img src="{{ ligne.product.image }}" alt="{{ ligne.product.name }}">
+                    {% else %}
+                        <div class="placeholder-image">
+                            <i class="bi bi-image"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="item-details">
+                    <h4 class="item-name">{{ ligne.product.name }}</h4>
+                    <p class="item-category">{{ ligne.product.category.name }}</p>
+                    <div class="item-specs">
+                        <span class="spec">Price: {{ ligne.product.price }} TND</span>
+                        <span class="spec">Qty: {{ ligne.quantity }}</span>
+                    </div>
+                </div>
+                <div class="item-total">
+                    <span class="total-amount">{{ (ligne.product.price * ligne.quantity) }} TND</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Order Total -->
+    <div class="order-total-section">
+        <div class="total-breakdown">
+            {% set grandTotal = 0 %}
+            {% for ligne in commande.orderLines %}
+                {% set grandTotal = grandTotal + (ligne.product.price * ligne.quantity) %}
+            {% endfor %}
+            
+            <div class="breakdown-item">
+                <span>Subtotal:</span>
+                <span>{{ grandTotal }} TND</span>
+            </div>
+            <div class="breakdown-item">
+                <span>Shipping:</span>
+                <span>7.00 TND</span>
+            </div>
+            <div class="breakdown-item">
+                <span>Tax:</span>
+                <span>0.00 TND</span>
+            </div>
+            <div class="breakdown-item total">
+                <span>Total:</span>
+                <span>{{ grandTotal + 7 }} TND</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-section">
+        <div class="action-buttons">
+            <a href="{{ path('client.product.home') }}" class="action-btn secondary">
+                <i class="bi bi-arrow-left me-2"></i>
+                Continue Shopping
             </a>
-            <a href="{{ path('client.bucket.invoice', {id: commande.id}) }}" class="btn btn-primary px-4 py-2">
-                <i class="bi bi-download me-2"></i>Download Invoice
+            <a href="{{ path('client.bucket.invoice', {id: commande.id}) }}" target="_blank" class="action-btn primary">
+                <i class="bi bi-download me-2"></i>
+                Download Invoice
             </a>
         </div>
     </div>
-    
-    <div class="card border-0 shadow-sm mt-5">
-        <div class="card-body text-center">
-            <h4 class="mb-3">What's Next?</h4>
-            <div class="row">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
-                        <i class="bi bi-truck fs-1 text-primary"></i>
-                    </div>
-                    <h5>Track Your Order</h5>
-                    <p class="text-muted mb-0">Real-time updates on your delivery status</p>
+
+    <!-- Next Steps -->
+    <div class="next-steps-section">
+        <h2 class="section-title">What's Next?</h2>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-icon">
+                    <i class="bi bi-clock-history"></i>
                 </div>
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
-                        <i class="bi bi-chat-dots fs-1 text-primary"></i>
-                    </div>
-                    <h5>Need Help?</h5>
-                    <p class="text-muted mb-0">Our support team is ready to assist you</p>
+                <h4>Order Processing</h4>
+                <p>We're preparing your order for shipment. You'll receive updates via email.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">
+                    <i class="bi bi-truck"></i>
                 </div>
-                <div class="col-md-4">
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
-                        <i class="bi bi-shop fs-1 text-primary"></i>
-                    </div>
-                    <h5>Continue Shopping</h5>
-                    <p class="text-muted mb-0">Discover more great products in our store</p>
+                <h4>Shipping</h4>
+                <p>Your order will be shipped within 1-2 business days with tracking information.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">
+                    <i class="bi bi-house-door"></i>
                 </div>
+                <h4>Delivery</h4>
+                <p>Expect delivery within 3-5 business days to your specified address.</p>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .confirmation-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        color: var(--text-primary);
+    }
+    
+    /* Success Hero Section */
+    .success-hero {
+        text-align: center;
+        padding: 3rem 0;
+        background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+        border-radius: 20px;
+        margin-bottom: 3rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .success-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.1;
+    }
+    
+    .success-animation {
+        position: relative;
+        z-index: 2;
+        margin-bottom: 2rem;
+    }
+    
+    .success-circle {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        margin: 0 auto 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        animation: successPulse 2s ease-out infinite;
+    }
+    
+    .success-checkmark {
+        font-size: 3rem;
+        animation: checkmarkPop 0.6s ease-out 0.5s both;
+    }
+    
+    @keyframes successPulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+        50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
+    }
+    
+    @keyframes checkmarkPop {
+        0% { transform: scale(0) rotate(0deg); opacity: 0; }
+        50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+        100% { transform: scale(1) rotate(360deg); opacity: 1; }
+    }
+    
+    .success-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .success-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .success-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .order-number {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .order-label {
+        font-weight: 500;
+        opacity: 0.8;
+    }
+    
+    .order-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    
+    /* Summary Grid */
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .summary-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+    
+    .card-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+    }
+    
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+    
+    .detail-label {
+        font-weight: 500;
+        color: var(--text-secondary);
+    }
+    
+    .detail-value {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-badge.confirmed {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+    }
+    
+    .status-badge.processing {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning-color);
+    }
+    
+    /* Order Items */
+    .order-items-section,
+    .next-steps-section {
+        margin-bottom: 3rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+    }
+    
+    .items-container {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+    
+    .order-item {
+        display: grid;
+        grid-template-columns: 80px 1fr auto;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        align-items: center;
+    }
+    
+    .order-item:last-child {
+        border-bottom: none;
+    }
+    
+    .item-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bg-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .placeholder-image {
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+    }
+    
+    .item-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+    
+    .item-category {
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .item-specs {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .spec {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+    
+    .total-amount {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    /* Order Total */
+    .order-total-section {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .total-breakdown {
+        max-width: 400px;
+        margin-left: auto;
+    }
+    
+    .breakdown-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-primary);
+    }
+    
+    .breakdown-item:last-child {
+        border-bottom: none;
+    }
+    
+    .breakdown-item.total {
+        font-size: 1.25rem;
+        font-weight: 700;
+        padding-top: 1.5rem;
+        border-top: 2px solid var(--border-color);
+        color: var(--primary-color);
+    }
+    
+    /* Actions */
+    .action-section {
+        margin-bottom: 3rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+    
+    .action-btn.primary {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .action-btn.primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        color: white;
+    }
+    
+    .action-btn.secondary {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+    }
+    
+    .action-btn.secondary:hover {
+        background: var(--bg-primary);
+        transform: translateY(-2px);
+        color: var(--text-primary);
+    }
+    
+    /* Next Steps */
+    .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+    
+    .step-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .step-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .step-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .step-card h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+    
+    .step-card p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .confirmation-container {
+            padding: 1rem;
+        }
+        
+        .success-title {
+            font-size: 2rem;
+        }
+        
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .order-item {
+            grid-template-columns: 60px 1fr;
+            gap: 1rem;
+        }
+        
+        .total-amount {
+            grid-column: span 2;
+            text-align: right;
+            margin-top: 1rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+</style>
 {% endblock %}
